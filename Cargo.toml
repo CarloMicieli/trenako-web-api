@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "collecting",
+    "catalog",
+    "webapi",
+]

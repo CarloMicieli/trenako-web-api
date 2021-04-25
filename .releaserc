@@ -1,0 +1,41 @@
+{
+     "branches": "main",
+     "repositoryUrl": "https://github.com/CarloMicieli/trenako-web-api",
+     "debug": "true",
+     "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+        [
+            "@semantic-release/changelog",
+            {
+                "changelogFile": "CHANGELOG.md",
+                "changelogTitle": "# Trenako Web Api Changelog"
+            }
+        ],
+        [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "./prepare-release.sh ${nextRelease.version}"
+            }
+        ],
+        [
+            "@semantic-release/git",
+            {
+                "assets": [
+                    "CHANGELOG.md",
+                    "Cargo.toml"
+                ]
+            }
+        ],
+        [
+            "@semantic-release/github",
+            {
+                "assets": [
+                    {
+                        "path": "release/**"
+                    }
+                ]
+            }
+        ]
+    ]
+}
