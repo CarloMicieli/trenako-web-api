@@ -83,9 +83,6 @@ jobs:
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v1
 
-      - name: Build executable
-        run: cargo build --release
-
       - name: Install set-cargo-version
         uses: actions-rs/cargo@v1
         with:
