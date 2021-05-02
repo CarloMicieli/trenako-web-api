@@ -1,8 +1,11 @@
-name: docker
+name: docker-v2
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+  release:
+    types:
+      - created
   
 jobs:
   docker:
