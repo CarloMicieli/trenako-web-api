@@ -3,7 +3,8 @@
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 ![GitHub last commit](https://img.shields.io/github/last-commit/CarloMicieli/trenako-web-api)
 ![GitHub top language](https://img.shields.io/github/languages/top/CarloMicieli/trenako-web-api)
-[![Build](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/ci.yml/badge.svg)](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/ci.yml)
+[![dev](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/dev.yml/badge.svg)](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/dev.yml)
+[![main](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/main.yml/badge.svg)](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/CarloMicieli/trenako-web-api/branch/main/graph/badge.svg?token=D01ZSPN6UR)](https://codecov.io/gh/CarloMicieli/trenako-web-api)
 ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/carlomicieli/trenako-web-api/latest?style=plastic)
 

@@ -1,9 +1,8 @@
-name: build
+name: dev
 on: 
   push:
-    branches-ignore: 
+    branches: 
       - dev
-      - main
 
 env:
   CARGO_TERM_COLOR: always
@@ -23,9 +22,26 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+          components: rustfmt, clippy
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v1
+      
+      - name: Cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+      - name: Check formatting with rustfmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Linting with Clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         uses: actions-rs/cargo@v1
