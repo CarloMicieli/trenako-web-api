@@ -5,6 +5,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/CarloMicieli/trenako-web-api)
 [![Build](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/ci.yml/badge.svg)](https://github.com/CarloMicieli/trenako-web-api/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/CarloMicieli/trenako-web-api/branch/main/graph/badge.svg?token=D01ZSPN6UR)](https://codecov.io/gh/CarloMicieli/trenako-web-api)
+![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/carlomicieli/trenako-web-api/latest?style=plastic)
 
 A web api for model railway collections
 
