@@ -23,7 +23,9 @@
             {
                 "assets": [
                     "CHANGELOG.md",
-                    "Cargo.toml"
+                    "./catalog/Cargo.toml",
+                    "./collecting/Cargo.toml",
+                    "./webapi/Cargo.toml"
                 ]
             }
         ],
