@@ -1,3 +1,5 @@
+pub mod manufactures;
+
 #[cfg(test)]
 mod tests {
     #[test]
