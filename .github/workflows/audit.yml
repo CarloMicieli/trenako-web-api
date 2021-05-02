@@ -1,4 +1,4 @@
-name: Security Audit
+name: audit
 on:
   pull_request:
     paths: Cargo.lock
