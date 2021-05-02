@@ -1,5 +1,12 @@
 # Trenako Web Api Changelog
 
+## [0.2.3](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.2...v0.2.3) (2021-05-02)
+
+
+### Bug Fixes
+
+* modify event to trigger docker push ([4e0c1d1](https://github.com/CarloMicieli/trenako-web-api/commit/4e0c1d11ece4d707f0ecddbfb55c824a1b6724dc))
+
 ## [0.2.2](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.1...v0.2.2) (2021-05-02)
 
 
