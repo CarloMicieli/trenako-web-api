@@ -14,7 +14,7 @@ pub fn run(
 ) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(TracingLogger)
+            .wrap(TracingLogger::default())
             .route("/health", web::get().to(health_check))
             .app_data(db_pool.clone())
     })
