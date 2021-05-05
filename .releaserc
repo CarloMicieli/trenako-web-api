@@ -38,6 +38,20 @@
                     }
                 ]
             }
+        ],
+        [
+            "@eclass/semantic-release-docker",
+            {
+                "baseImageName": "trenako-web-api",
+                "registries": [
+                {
+                    "url": "docker.io",
+                    "imageName": "docker.io/carlomicieli/trenako-web-api",
+                    "user": "DOCKERHUB_USERNAME",
+                    "password": "DOCKERHUB_TOKEN"
+                }
+                ]
+            }
         ]
     ]
 }
