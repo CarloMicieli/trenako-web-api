@@ -8,6 +8,7 @@ pub struct Settings {
     secret_key: String,
 }
 
+/// Application settings
 impl Settings {
     pub fn get_address(&self) -> String {
         format!("0.0.0.0:{}", self.app_port)
