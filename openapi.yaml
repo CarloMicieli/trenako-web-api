@@ -1,0 +1,449 @@
+openapi: "3.0.1"
+info:
+  description: |
+    A model railway collections api
+  version: "v1"
+  title: "Trenako"
+  termsOfService: "http://www.trenako.com/terms/"
+  contact:
+    email: "mail@trenako.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://localhost:5000
+    description: local
+    
+paths:
+  /api/brands:
+    get:
+      tags:
+        - brands
+      summary: returns the list of brands
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brands'
+  /api/railways:
+    get:
+      tags:
+        - railways
+      summary: returns the list of railways - sorted by their name
+      responses:
+        '200': 
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Railways'            
+    post:
+      tags:
+        - railways
+      summary: create a new railway
+      requestBody:
+        description: a new railway
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Railway'
+      responses:
+        '204': 
+          description: a new railway has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly create railway
+  /api/railways/{railwayId}:
+    get:
+      tags:
+        - railways
+      summary: return the information for the railway with the railwayId slug.
+      parameters:
+        - name: railwayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses: 
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Railway'
+        404:
+          description: not found
+        500:
+          description: an error has occurred
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      tags:
+        - railways
+      summary: delete the railway
+      parameters:
+        - name: railwayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:            
+        '204':
+          description: removed
+        '404':
+          description: not found
+        '500':
+          description: an error has occurred
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ProblemDetail'            
+  /api/scales:
+    get:
+      tags:
+        - scales
+      summary: return the list of scales
+      responses:
+        '200': 
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scales'          
+    post:
+      tags:
+        - scales
+      summary: create a new scale
+      requestBody:
+        description: a new scale
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scale'      
+      responses:
+        '204': 
+          description: a new scale has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly scale railway
+  /api/scales/{scaleId}:
+    get:
+      tags:
+        - scales
+      summary: return the scale
+      parameters:
+        - name: scaleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses: 
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Scale'
+        404:
+          description: not found
+        500:
+          description: an error has occurred
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      tags:
+        - scales
+      summary: delete the scale
+      parameters:
+        - name: scaleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:            
+        '204':
+          description: removed
+        '404':
+          description: not found
+        '500':
+          description: an error has occurred
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ProblemDetail'    
+              
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        address_line1:
+          type: string
+          maxLength: 250
+        address_line2:
+          type: string
+          maxLength: 250   
+        city:
+          type: string
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 10
+        country:
+          type: string
+          maxLength: 2
+    Brand:
+      type: object
+      properties:
+        brand_id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          maxLength: 25
+        name:
+          type: string
+          maxLength: 25
+        company_name:
+          type: string
+        mail_addess:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: '#/components/schemas/Address'
+        kind:
+          type: string
+          enum:
+            - industrial
+            - brass_models
+      required:
+        - brand_id
+        - name
+        - slug
+        - kind
+    Brands:
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Pagination'
+        limit:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+    Pagination:
+      type: object
+      properties:
+        _self: 
+          type: string
+          format: uri
+        prev:
+          type: string
+          format: uri
+        next:
+          type: string
+          format: uri
+      example:
+        _self: 'http://mysite/current-page'
+        prev: 'http://mysite/previous-page'
+        next: 'http://mysite/next-page'
+    PeriodOfActivity:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: 
+            - active
+            - inactive
+        operating_since:
+          type: string
+          format: date
+        operating_until:
+          type: string
+          format: date
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: number
+          format: int32
+    Railway:
+      type: object
+      properties:
+        railway_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 25
+        company_name:
+          type: string
+          maxLength: 250
+        country:
+          type: string
+          maxLength: 2
+        description:
+          type: string
+          maxLength: 1000
+        total_length:
+          $ref: '#/components/schemas/TotalLength'
+        period_of_activity:
+          $ref: '#/components/schemas/PeriodOfActivity'
+        railway_gauge:
+          $ref: '#/components/schemas/RailwayGauge'
+        headquarters:
+          type: string
+          maxLength: 100
+        logo_url:
+          type: string
+          maxLenght: 250
+          format: uri
+        website_url:
+          type: string
+          maxLength: 250
+          format: uri
+      required:
+        - railway_id
+        - name
+        - slug
+        - country
+      example:
+        railway_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+        name: 'Die Bahn'
+        slug: 'die-bahn'
+        company_name: 'Die Bahn'
+        description: 'Description goes here'
+        country: 'de'
+        total_length:
+          kilometers: 1111
+          miles: 1111
+        period_of_activity:
+          operating_since: '1900-01-01'
+          operating_until: '1999-12-31'
+          status: 'inactive'
+        railway_gauge:
+          millimeters: 1435
+          inches: 65
+          gauge: normal
+        headquartes: 'Berlin'
+        logo_url: 'https://images.url/logo.jpg'
+        website_url: 'https://www.diebahn.de'
+    RailwayGauge:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: int32
+        inches:
+          type: number
+          format: int32
+        gauge:
+          type: string
+          enum:
+            - narrow
+            - standard
+      example:
+        millimeters: 16.5
+        inches: 0.65
+        gauge: standard
+    Railways:
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Pagination'
+        limit:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Railway'
+    Scale:
+      type: object
+      properties:
+        scale_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 15
+        description:
+          type: string
+          maxLength: 1000
+        ratio:
+          type: number
+        gauge:
+          $ref: '#/components/schemas/RailwayGauge'
+        standard:
+          type: array
+          items:
+            type: string
+      required:
+        - scale_id
+        - name
+        - slug
+    Scales:
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Pagination'
+        limit:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scale'    
+    TotalLength:
+      type: object
+      properties:
+        miles:
+          type: number
+          format: int32
+        kilometers:
+          type: number
+          format: int32
+      example:
+        miles: 123
+        kilometers: 123          
