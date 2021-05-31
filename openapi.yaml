@@ -1,179 +1,196 @@
 openapi: "3.0.1"
 info:
-  title: "Trenako"
-  description: |
-    A model railway collections api
+  title: Trenako
+  description: A model railway collections api
   version: 1.0.0
-  termsOfService: "http://www.trenako.com/terms/"
+  termsOfService: http://www.trenako.com/terms
   contact:
-    email: "mail@trenako.com"
+    email: mail@trenako.com
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
 servers:
   - url: http://localhost:5000
     description: local
+
 security:
   - BearerAuth: []
 
 paths:
-  /api/account:
+  /api/accounts:
     post:
+      summary: create a new user account
       tags:
-        - account
-      summary: create new accounts
+        - accounts
+      operationId: createAccount
       requestBody:
         description: a new account
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/AccountRequest'
+              $ref: "#/components/schemas/AccountRequest"
       responses:
-        '200': 
+        "200":
           description: a new account has been created
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
           description: the account already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error' 
-  /api/authenticate:
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/authentications:
     post:
-      tags:
-        - account
       summary: authenticate a user
+      tags:
+        - accounts
+      operationId: authenticateUser
       requestBody:
-        description: a new account
+        description: the login information for account to authenticate
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
+              $ref: "#/components/schemas/AuthenticationRequest"
       responses:
-        '200': 
-          description: the account authentication
-          content: 
-            'application/vnd.trenako.authentication+json':
-              schema: 
-                $ref: '#/components/schemas/Authentication'   
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'         
+        "200":
+          description: an authentication
+          content:
+            "application/vnd.trenako.authentication+json":
+              schema:
+                $ref: "#/components/schemas/Authentication"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
   /api/brands:
     get:
+      summary: get the list of brands
       tags:
         - brands
-      summary: returns the list of brands
+      operationId: getBrands
       responses:
-        '200':
+        "200":
           description: ok
           content:
-            'application/vnd.trenako.brands+json':
+            "application/vnd.trenako.brands+json":
               schema:
-                $ref: '#/components/schemas/Brands'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
-          description: brands were not found                
-        '500':
-          $ref: '#/components/responses/Error' 
+                $ref: "#/components/schemas/Brands"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: brands were not found
+        "500":
+          $ref: "#/components/responses/Error"
     post:
+      summary: create a new model railway brand
       tags:
         - brands
-      summary: create a new brand
+      operationId: createBrand
       requestBody:
         description: a new brand
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/BrandRequest'
+              $ref: "#/components/schemas/BrandRequest"
       responses:
-        '201': 
-          description: a new brand has been created
+        "201":
+          description: new brand created
           headers:
             location:
               schema:
                 type: string
                 format: uri
               description: the uri for the newly created brand
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the brand already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'           
-  /api/brands/{brandId}:
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/brands/{brand-id}:
     get:
+      summary: get a brand
       tags:
         - brands
-      summary: return the information for the brand with the brandId.
+      operationId: getBrand
       parameters:
-        - name: brandId
+        - name: brand-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses: 
-        '200':
+      responses:
+        "200":
           description: OK
-          content: 
-            'application/vnd.trenako.brand+json':
-              schema: 
-                $ref: '#/components/schemas/Brand'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
+          content:
+            "application/vnd.trenako.brand+json":
+              schema:
+                $ref: "#/components/schemas/Brand"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: brand was not found
-        '500':
-          $ref: '#/components/responses/Error'
+        "500":
+          $ref: "#/components/responses/Error"
     delete:
+      summary: delete a brand
       tags:
         - brands
-      summary: delete the brand
+      operationId: deleteBrand
       parameters:
-        - name: brandId
+        - name: brand-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses:            
-        '204':
+      responses:
+        "204":
           description: brand was removed
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: brand to remove not found
-        '500':
-          $ref: '#/components/responses/Error'          
+        "409":
+          description: brand is in use
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "500":
+          $ref: "#/components/responses/Error"
     put:
+      summary: update a brand
       tags:
         - brands
-      summary: updates a brand
+      operationId: updateBrand
       parameters:
-        - name: brandId
+        - name: brand-id
           in: path
           required: true
           schema:
@@ -183,11 +200,11 @@ paths:
         description: the updated brand
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/BrandRequest'
+              $ref: "#/components/schemas/BrandRequest"
       responses:
-        '204': 
+        "204":
           description: a new brand has been created
           headers:
             location:
@@ -195,51 +212,54 @@ paths:
                 type: string
                 format: uri
               description: the uri for the newly created brand
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the brand already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
   /api/railways:
     get:
+      summary: get the list of railways
       tags:
         - railways
-      summary: returns the list of railways - sorted by their name
+      operationId: getRailways
       responses:
-        '200': 
+        "200":
           description: OK
           content:
-            'application/vnd.trenako.railways+json':
+            "application/vnd.trenako.railways+json":
               schema:
-                $ref: '#/components/schemas/Railways'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
-          description: railways were not found                
-        '500':
-          $ref: '#/components/responses/Error'  
+                $ref: "#/components/schemas/Railways"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: railways were not found
+        "500":
+          $ref: "#/components/responses/Error"
     post:
+      summary: create a new railway
       tags:
         - railways
-      summary: create a new railway
+      operationId: createRailway
       requestBody:
         description: a new railway
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RailwayRequest'
+              $ref: "#/components/schemas/RailwayRequest"
       responses:
-        '201': 
+        "201":
           description: a new railway has been created
           headers:
             location:
@@ -247,118 +267,134 @@ paths:
                 type: string
                 format: uri
               description: the uri for the newly created railway
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the railway already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
-  /api/railways/{railwayId}:
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/railways/{railway-id}:
     get:
+      summary: get a railway
       tags:
         - railways
-      summary: return the information for the railway with the railwayId slug.
+      operationId: getRailway
       parameters:
-        - name: railwayId
+        - name: railway-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses: 
-        '200':
+      responses:
+        "200":
           description: OK
-          content: 
-            'application/vnd.trenako.railway+json':
-              schema: 
-                $ref: '#/components/schemas/Railway'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
+          content:
+            "application/vnd.trenako.railway+json":
+              schema:
+                $ref: "#/components/schemas/Railway"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: railway was not found
-        '500':
-          $ref: '#/components/responses/Error'
+        "500":
+          $ref: "#/components/responses/Error"
     delete:
+      summary: delete a railway
       tags:
         - railways
-      summary: delete the railway
+      operationId: deleteRailway
       parameters:
-        - name: railwayId
+        - name: railway-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses:            
-        '204':
+      responses:
+        "204":
           description: railway was removed
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: railway to remove not found
-        '500':
-          $ref: '#/components/responses/Error'         
+        "409":
+          description: railway is in use
+        "500":
+          $ref: "#/components/responses/Error"
     put:
+      summary: update a railway
       tags:
         - railways
-      summary: create a new railway
+      operationId: updateRailway
+      parameters:
+        - name: railway-id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
       requestBody:
         description: a new railway
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/RailwayRequest'
+              $ref: "#/components/schemas/RailwayRequest"
       responses:
-        '204': 
+        "204":
           description: the railway has been updated
-        '400':
-          $ref: '#/components/responses/BadRequest' 
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
   /api/scales:
     get:
+      summary: get the list of scales
       tags:
         - scales
-      summary: return the list of scales
+      operationId: getScales
       responses:
-        '200': 
+        "200":
           description: OK
           content:
-            'application/vnd.trenako.scales+json':
+            "application/vnd.trenako.scales+json":
               schema:
-                $ref: '#/components/schemas/Scales'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
+                $ref: "#/components/schemas/Scales"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: no scales were found
-        '500':
-          $ref: '#/components/responses/Error'          
+        "500":
+          $ref: "#/components/responses/Error"
     post:
+      summary: create a new scale
       tags:
         - scales
-      summary: create a new scale
+      operationId: createScale
       requestBody:
         description: a new scale
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScaleRequest'      
+              $ref: "#/components/schemas/ScaleRequest"
       responses:
-        '201': 
+        "201":
           description: a new scale has been created
           headers:
             location:
@@ -366,71 +402,77 @@ paths:
                 type: string
                 format: uri
               description: the uri for the newly scale railway
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the scale already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'           
-        '500':
-          $ref: '#/components/responses/Error'
-  /api/scales/{scaleId}:
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/scales/{scale-id}:
     get:
+      summary: get a scale
       tags:
         - scales
-      summary: return the scale
+      operationId: getScale
       parameters:
-        - name: scaleId
+        - name: scale-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses: 
-        '200':
+      responses:
+        "200":
           description: OK
-          content: 
-            'application/vnd.trenako.scale+json':
-              schema: 
-                $ref: '#/components/schemas/Scale'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'                
-        '404':
+          content:
+            "application/vnd.trenako.scale+json":
+              schema:
+                $ref: "#/components/schemas/Scale"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: scale with scaleId was not found
-        '500':
-          $ref: '#/components/responses/Error'
+        "500":
+          $ref: "#/components/responses/Error"
     delete:
+      summary: delete a scale
       tags:
         - scales
-      summary: delete the scale
+      operationId: deleteScale
       parameters:
-        - name: scaleId
+        - name: scale-id
           in: path
           required: true
           schema:
             type: string
             format: uuid
-      responses:            
-        '204':
+      responses:
+        "204":
           description: scale was removed
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: scale to remove was not found
-        '500':
-          $ref: '#/components/responses/Error'    
+        "409":
+          description: scale is in use
+        "500":
+          $ref: "#/components/responses/Error"
     put:
+      summary: updates a scale
       tags:
         - scales
-      summary: updates a scale
+      operationId: updateScale
       parameters:
-        - name: scaleId
+        - name: scale-id
           in: path
           required: true
           schema:
@@ -440,40 +482,42 @@ paths:
         description: the updated scale
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/ScaleRequest'
+              $ref: "#/components/schemas/ScaleRequest"
       responses:
-        '204': 
+        "204":
           description: the scale has been updated
-        '400':
-          $ref: '#/components/responses/BadRequest' 
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the scale already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
   /api/catalog-items:
     post:
+      summary: create a new catalog item
       tags:
         - catalog-items
-      summary: create a new catalog items
+      operationId: createCatalogItem
       requestBody:
-        description: a new catalog items
+        description: a new catalog item
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CatalogItemRequest'      
+              $ref: "#/components/schemas/CatalogItemRequest"
       responses:
-        '201': 
+        "201":
           description: a new catalog item has been created
           headers:
             location:
@@ -481,157 +525,185 @@ paths:
                 type: string
                 format: uri
               description: the uri for the new catalog item
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: the catalog item already exists
-          content: 
-            'application/vnd.trenako.problem+json':
-              schema: 
-                $ref: '#/components/schemas/ProblemDetail'    
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'         
-        '500':
-          $ref: '#/components/responses/Error'
-  /api/catalog-items/{catalogItemId}:
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/catalog-items/{catalog-item-id}:
     get:
+      summary: get a catalog item
       tags:
         - catalog-items
-      summary: Get the catalog item with the prodived id
+      operationId: getCatalogItem
       parameters:
-        - name: catalogItemId
+        - name: catalog-item-id
           in: path
           required: true
           schema:
             type: string
-            format: uuid        
+            format: uuid
       responses:
-        '200':
+        "200":
           description: OK
-          content: 
-            'application/vnd.trenako.catalog.item+json':
-              schema: 
-                $ref: '#/components/schemas/CatalogItem'        
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'        
-        '404':
-        '500':     
-          $ref: '#/components/responses/Error'  
+          content:
+            "application/vnd.trenako.catalog.item+json":
+              schema:
+                $ref: "#/components/schemas/CatalogItem"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: not found
+        "500":
+          $ref: "#/components/responses/Error"
     put:
+      summary: update a catalog item
       tags:
-        - catalog-items    
-      summary: Updates the catalog item
+        - catalog-items
+      operationId: updateCatalogItem
       parameters:
-        - name: catalogItemId
+        - name: catalog-item-id
           in: path
           required: true
           schema:
             type: string
-            format: uuid      
+            format: uuid
       requestBody:
         description: the updated catalog item
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/CatalogItemRequest'            
+              $ref: "#/components/schemas/CatalogItemRequest"
       responses:
-        '204':
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'          
-        '404':
-        '409':
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':  
-          $ref: '#/components/responses/Error'  
-  /api/catalog-items/{catalogItemId}/rolling-stocks:
+        "204":
+          description: created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: not found
+        "409":
+          description: conflict
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/catalog-items/{catalog-item-id}/rolling-stocks:
     post:
+      summary: create a new rolling stock for a catalog item
       tags:
         - catalog-items
-      summary:
+      operationId: addRollingStock
       parameters:
-        - name: catalogItemId
+        - name: catalog-item-id
           in: path
           required: true
           schema:
             type: string
-            format: uuid  
+            format: uuid
+      requestBody:
+        description: a new rolling stock
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RollingStockRequest"            
       responses:
-        '201':
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-        '409':
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
-  /api/catalog-items/{catalogItemId}/rolling-stocks/{rollingStockId}:
+        "201":
+          description: created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: not found
+        "409":
+          description: conflict
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/catalog-items/{catalog-item-id}/rolling-stocks/{rolling-stock-id}:
     delete:
-      tags:
-        - catalog-items  
       summary: delete the rolling stock from the catalog item
-      parameters:
-        - name: catalogItemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid  
-        - name: rollingStockId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: urn                        
-      responses:
-        '204':
-        '400':
-          $ref: '#/components/responses/BadRequest'        
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-        '409':
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':    
-          $ref: '#/components/responses/Error'
-    put:
       tags:
-        - catalog-items    
-      summary: update the rolling stock in the catalog item
+        - catalog-items
+      operationId: deleteRollingStock
       parameters:
-        - name: catalogItemId
+        - name: catalog-item-id
           in: path
           required: true
           schema:
             type: string
-            format: uuid  
-        - name: rollingStockId
+            format: uuid
+        - name: rolling-stock-id
           in: path
           required: true
           schema:
             type: string
-            format: urn           
+            format: urn
       responses:
-        '204':
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-        '409':
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '500':
-          $ref: '#/components/responses/Error'
+        "204":
+          description: catalog item has been deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: catalog item to remove not found
+        "409":
+          description: conflict
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: update the rolling stock in the catalog item
+      tags:
+        - catalog-items
+      operationId: updateRollingStock
+      parameters:
+        - name: catalog-item-id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: rolling-stock-id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: urn
+      responses:
+        "204":
+          description: tbd
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: tbd
+        "409":
+          description: tbd
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
 
 components:
   securitySchemes:
@@ -643,30 +715,30 @@ components:
   responses:
     BadRequest:
       description: the request is not valid
-      content: 
-        'application/vnd.trenako.problem+json':
-          schema: 
-            $ref: '#/components/schemas/ProblemDetail'
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
     Error:
       description: an error has occurred
-      content: 
-        'application/vnd.trenako.problem+json':
-      schema: 
-        $ref: '#/components/schemas/ProblemDetail'
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
     UnauthorizedError:
       description: Access token is missing or invalid
     UnprocessableEntity:
       description: the request is unprocessable
-      content: 
-        'application/vnd.trenako.problem+json':
-          schema: 
-            $ref: '#/components/schemas/ProblemDetail'   
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
 
   schemas:
     AccountRequest:
       type: object
       properties:
-        username: 
+        username:
           type: string
           minLength: 4
           maxLength: 50
@@ -690,7 +762,7 @@ components:
           maxLength: 250
         address_line2:
           type: string
-          maxLength: 250   
+          maxLength: 250
         city:
           type: string
           maxLength: 100
@@ -711,17 +783,17 @@ components:
     Authentication:
       type: object
       properties:
-        username: 
+        username:
           type: string
         token:
           type: string
       required:
         - username
-        - token        
+        - token
     AuthenticationRequest:
       type: object
       properties:
-        username: 
+        username:
           type: string
           minLength: 4
           maxLength: 50
@@ -734,11 +806,11 @@ components:
         - username
         - password
     Brand:
-      description: a model railways manufacturer 
+      description: a model railways manufacturer
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Self'
+          $ref: "#/components/schemas/Self"
         name:
           type: string
           maxLength: 25
@@ -755,7 +827,7 @@ components:
           type: string
           format: uri
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         kind:
           type: string
           enum:
@@ -767,7 +839,7 @@ components:
             - ACTIVE
             - OUT_OF_BUSINESS
     BrandRequest:
-      description: a model railways manufacturer 
+      description: a model railways manufacturer
       type: object
       properties:
         name:
@@ -789,7 +861,7 @@ components:
           type: string
           format: uri
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         kind:
           type: string
           enum:
@@ -807,22 +879,23 @@ components:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         limit:
-          type: number
+          type: integer
+          format: int32
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Brand'
+            $ref: "#/components/schemas/Brand"
     CatalogItem:
       type: object
       properties:
         brand:
-          $ref: '#/components/schemas/CatalogItemBrand'
+          $ref: "#/components/schemas/CatalogItemBrand"
         item_number:
           type: string
         scale:
-          $ref: '#/components/schemas/CatalogItemScale'
+          $ref: "#/components/schemas/CatalogItemScale"
         description:
           type: string
         prototype_description:
@@ -855,15 +928,15 @@ components:
         rolling_stocks:
           type: array
           items:
-            $ref: '#/components/schemas/RollingStock'   
+            $ref: "#/components/schemas/RollingStock"
         created_at:
           description: when got this catalog item created
           type: string
-          format: 'date-time'
+          format: "date-time"
         modified_at:
           description: when got this catalog item last updated
           type: string
-          format: 'date-time'                              
+          format: "date-time"
       required:
         - brand
         - item_number
@@ -873,12 +946,12 @@ components:
       type: object
       properties:
         _link:
-          $ref: '#/components/schemas/Self'
-        name: 
+          $ref: "#/components/schemas/Self"
+        name:
           type: string
       required:
         - _link
-        - name        
+        - name
     CatalogItemRequest:
       type: object
       properties:
@@ -927,41 +1000,43 @@ components:
         rolling_stocks:
           type: array
           items:
-            $ref: '#/components/schemas/RollingStock'   
+            $ref: "#/components/schemas/RollingStock"
         created_at:
           description: when got this catalog item created
           type: string
-          format: 'date-time'
+          format: "date-time"
         modified_at:
           description: when got this catalog item last updated
           type: string
-          format: 'date-time'                              
+          format: "date-time"
       required:
         - brand
         - item_number
         - scale
-        - description        
+        - description
     CatalogItemScale:
       type: object
       properties:
         _link:
-          $ref: '#/components/schemas/Self'
-        name: 
+          $ref: "#/components/schemas/Self"
+        name:
           type: string
       required:
         - _link
-        - name   
+        - name
     LengthOverBuffer:
       type: object
       properties:
         millimeters:
           type: number
+          format: float
         inches:
           type: number
+          format: float
     Pagination:
       type: object
       properties:
-        _self: 
+        _self:
           description: pagination link pointing to the current page
           type: string
           format: uri
@@ -974,15 +1049,15 @@ components:
           type: string
           format: uri
       example:
-        _self: 'http://mysite/current-page'
-        prev: 'http://mysite/previous-page'
-        next: 'http://mysite/next-page'
+        _self: "http://mysite/current-page"
+        prev: "http://mysite/previous-page"
+        next: "http://mysite/next-page"
     PeriodOfActivity:
       type: object
       properties:
         status:
           type: string
-          enum: 
+          enum:
             - ACTIVE
             - INACTIVE
         operating_since:
@@ -1001,13 +1076,13 @@ components:
         detail:
           type: string
         status:
-          type: number
+          type: integer
           format: int32
     Railway:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Self'
+          $ref: "#/components/schemas/Self"
         name:
           type: string
           minLength: 1
@@ -1022,17 +1097,16 @@ components:
           type: string
           maxLength: 1000
         total_length:
-          $ref: '#/components/schemas/TotalLength'
+          $ref: "#/components/schemas/TotalLength"
         period_of_activity:
-          $ref: '#/components/schemas/PeriodOfActivity'
+          $ref: "#/components/schemas/PeriodOfActivity"
         railway_gauge:
-          $ref: '#/components/schemas/RailwayGauge'
+          $ref: "#/components/schemas/RailwayGauge"
         headquarters:
           type: string
           maxLength: 100
         logo_url:
           type: string
-          maxLenght: 250
           format: uri
         website_url:
           type: string
@@ -1058,17 +1132,16 @@ components:
           type: string
           maxLength: 1000
         total_length:
-          $ref: '#/components/schemas/TotalLength'
+          $ref: "#/components/schemas/TotalLength"
         period_of_activity:
-          $ref: '#/components/schemas/PeriodOfActivity'
+          $ref: "#/components/schemas/PeriodOfActivity"
         railway_gauge:
-          $ref: '#/components/schemas/RailwayGauge'
+          $ref: "#/components/schemas/RailwayGauge"
         headquarters:
           type: string
           maxLength: 100
         logo_url:
           type: string
-          maxLenght: 250
           format: uri
         website_url:
           type: string
@@ -1082,10 +1155,10 @@ components:
       properties:
         millimeters:
           type: number
-          format: int32
+          format: float
         inches:
           type: number
-          format: int32
+          format: float
         gauge:
           type: string
           enum:
@@ -1099,13 +1172,14 @@ components:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         limit:
-          type: number
+          type: integer
+          format: int32
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Railway'
+            $ref: "#/components/schemas/Railway"
     RollingStock:
       type: object
       properties:
@@ -1115,11 +1189,12 @@ components:
         epoch:
           type: string
         length_over_buffer:
-          $ref: '#/components/schemas/LengthOverBuffer'
+          $ref: "#/components/schemas/LengthOverBuffer"
         min_radius:
           type: number
+          format: float
         railway:
-          $ref: '#/components/schemas/RollingStockRailway'
+          $ref: "#/components/schemas/RollingStockRailway"
         class_name:
           type: string
         road_number:
@@ -1178,13 +1253,13 @@ components:
         passenger_car_type:
           type: string
         freight_car_type:
-          type: string    
+          type: string
     RollingStockRailway:
       type: object
       properties:
         _link:
-          $ref: '#/components/schemas/Self'
-        name: 
+          $ref: "#/components/schemas/Self"
+        name:
           type: string
       required:
         - _link
@@ -1195,9 +1270,10 @@ components:
         epoch:
           type: string
         length_over_buffer:
-          $ref: '#/components/schemas/LengthOverBuffer'
+          $ref: "#/components/schemas/LengthOverBuffer"
         min_radius:
           type: number
+          format: float
         railway:
           type: string
         class_name:
@@ -1258,7 +1334,7 @@ components:
         passenger_car_type:
           type: string
         freight_car_type:
-          type: string          
+          type: string
       required:
         - railway
         - category
@@ -1267,7 +1343,7 @@ components:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Self'
+          $ref: "#/components/schemas/Self"
         name:
           type: string
           minLength: 1
@@ -1277,8 +1353,9 @@ components:
           maxLength: 1000
         ratio:
           type: number
+          format: float
         gauge:
-          $ref: '#/components/schemas/RailwayGauge'
+          $ref: "#/components/schemas/RailwayGauge"
         standard:
           type: array
           items:
@@ -1298,8 +1375,9 @@ components:
           maxLength: 1000
         ratio:
           type: number
+          format: float
         gauge:
-          $ref: '#/components/schemas/RailwayGauge'
+          $ref: "#/components/schemas/RailwayGauge"
         standard:
           type: array
           items:
@@ -1311,13 +1389,14 @@ components:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         limit:
-          type: number
+          type: integer
+          format: int32
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Scale'    
+            $ref: "#/components/schemas/Scale"
     Self:
       type: object
       properties:
@@ -1334,10 +1413,7 @@ components:
       properties:
         miles:
           type: number
-          format: int32
+          format: float
         kilometers:
           type: number
-          format: int32
-      example:
-        miles: 123
-        kilometers: 123   
+          format: float
