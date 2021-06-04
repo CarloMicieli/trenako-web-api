@@ -3,5 +3,6 @@
 members = [
     "collecting",
     "catalog",
+    "social",
     "webapi",
 ]
