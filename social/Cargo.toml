@@ -1,0 +1,6 @@
+[package]
+name = "social"
+version = "0.2.3"
+authors = ["CarloMicieli <carlo.micieli@gmail.com>"]
+edition = "2018"
+license = "MIT"

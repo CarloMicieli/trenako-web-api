@@ -1,9 +1,22 @@
 {
-     "branches": "main",
-     "repositoryUrl": "https://github.com/CarloMicieli/trenako-web-api",
-     "debug": "true",
-     "plugins": [
-        "@semantic-release/commit-analyzer",
+    "branches": [
+         {"name": "main"},
+         {"name": "dev", "channel": "dev", "prerelease": "devel"},
+    ],
+    "repositoryUrl": "https://github.com/CarloMicieli/trenako-web-api",
+    "debug": "true",
+    "plugins": [
+        [
+            "@semantic-release/commit-analyzer",
+            {
+                "preset": "conventionalcommits",
+                "releaseRules": [
+                    {"type": "build", "release": "no-release"},
+                    {"type": "ci", "release": "no-release"},
+                    {"type": "docs", "release": "no-release"},
+                ]
+            }
+        ],
         "@semantic-release/release-notes-generator",
         [
             "@semantic-release/changelog",
@@ -25,6 +38,7 @@
                     "CHANGELOG.md",
                     "./catalog/Cargo.toml",
                     "./collecting/Cargo.toml",
+                    "./social/Cargo.toml",
                     "./webapi/Cargo.toml"
                 ]
             }
@@ -36,20 +50,6 @@
                     {
                         "path": "release/**"
                     }
-                ]
-            }
-        ],
-        [
-            "@eclass/semantic-release-docker",
-            {
-                "baseImageName": "trenako-web-api",
-                "registries": [
-                {
-                    "url": "docker.io",
-                    "imageName": "docker.io/carlomicieli/trenako-web-api",
-                    "user": "DOCKERHUB_USERNAME",
-                    "password": "DOCKERHUB_TOKEN"
-                }
                 ]
             }
         ]

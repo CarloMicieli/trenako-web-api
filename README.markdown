@@ -68,7 +68,7 @@ To build the docker image
 ```bash
   docker run --rm --name webapi-dev \
     -e APP_PORT=5000 \
-    -e DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/trenako \
+    -e DATABASE_URL=postgresql://postgres:mysecretpassword@<host_ip>:5432/trenako \
     -e SECRET_KEY=my-secret-key \
     -d -p 5000:5000 trenako-web-api:latest
 ```
@@ -90,7 +90,7 @@ To run the migrations:
   docker run --rm -it --network=host \
       -v "$(pwd)/db:/db" \
       amacneil/dbmate \
-      --url "postgresql://postgres:mysecretpassword@127.0.0.1:5432/trenako?sslmode=disable" \
+      --url "postgresql://postgres:mysecretpassword@<host_ip>:5432/trenako?sslmode=disable" \
       up
 ```
 
