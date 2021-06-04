@@ -53,7 +53,7 @@ jobs:
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
-          version: '0.16.0'
+          version: '0.15.0'
           args: '-- --test-threads 1'
 
       - name: Upload code coverage to codecov.io
