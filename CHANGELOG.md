@@ -14,6 +14,13 @@
 
 * **settings:** add rustdoc to settings struct ([0aa97c7](https://github.com/CarloMicieli/trenako-web-api/commit/0aa97c7b4f2fc8cf0e51c7bcf350b63a0512e040))
 
+## [0.2.4](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.3...v0.2.4) (2021-06-05)
+
+
+### Bug Fixes
+
+* **settings:** add rustdoc to settings struct ([0aa97c7](https://github.com/CarloMicieli/trenako-web-api/commit/0aa97c7b4f2fc8cf0e51c7bcf350b63a0512e040))
+
 ## [0.2.3](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.2...v0.2.3) (2021-05-02)
 
 
