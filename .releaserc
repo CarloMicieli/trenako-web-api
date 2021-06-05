@@ -6,16 +6,7 @@
     "repositoryUrl": "https://github.com/CarloMicieli/trenako-web-api",
     "debug": "true",
     "plugins": [
-        [
-            "@semantic-release/commit-analyzer",
-            {
-                "releaseRules": [
-                    {"type": "build", "release": false},
-                    {"type": "ci", "release": false},
-                    {"type": "docs", "release": false}
-                ]
-            }
-        ],
+        "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
         [
             "@semantic-release/changelog",
