@@ -88,6 +88,8 @@ jobs:
           tags: trenako-web-api:latest
           file: .docker/webapi.dockerfile
 
+      - run: docker image ls
+
       - uses: addnab/docker-run-action@v3
         with:
           image: trenako-web-api:latest
