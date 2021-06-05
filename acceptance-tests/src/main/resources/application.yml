@@ -1,7 +1,0 @@
-micronaut:
-  application:
-    name: acceptance-tests
-
-trenako:
-  web-api:
-    url: http://localhost:5000
