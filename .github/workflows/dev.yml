@@ -56,9 +56,14 @@ jobs:
           name: trenako-web-api
           path: target/debug/trenako-web-api
 
-  validation:
+  build-service-image:
     runs-on: ubuntu-20.04
     needs: build
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
 
     steps:
       - name: Check out the repo
@@ -69,6 +74,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
 
       - name: Download build output
         uses: actions/download-artifact@v2
@@ -85,15 +92,25 @@ jobs:
         with:
           context: .
           file: .docker/webapi.dockerfile
-          push: false
-          tags: trenako-web-api:latest
-          labels: trenako-web-api:latest
+          push: true
+          tags: localhost:5000/trenako-web-api/trenako-web-api:latest
 
-      - run: docker image ls
+  acceptance-tests:
+    runs-on: ubuntu-20.04
+    needs: build-service-image
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
 
       - uses: addnab/docker-run-action@v3
         with:
-          image: trenako-web-api:latest
+          image: localhost:5000/trenako-web-api/trenako-web-api:latest
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -109,7 +126,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-          working-directory: acceptance-tests
       
       - name: Build & run tests with Gradle
         working-directory: acceptance-tests
