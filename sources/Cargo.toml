@@ -1,8 +1,0 @@
-[workspace]
-
-members = [
-    "collecting",
-    "catalog",
-    "social",
-    "webapi",
-]

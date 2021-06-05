@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "./workspace/collecting",
+    "./workspace/catalog",
+    "./workspace/social",
+    "./workspace/webapi",
+]
