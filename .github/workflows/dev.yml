@@ -84,9 +84,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: .docker/webapi.dockerfile
           push: false
           tags: trenako-web-api:latest
-          file: .docker/webapi.dockerfile
+          labels: trenako-web-api:latest
 
       - run: docker image ls
 
