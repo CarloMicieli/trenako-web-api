@@ -68,7 +68,9 @@ To begin install `rustup`
 To build the docker image
 
 ```bash
-  docker build -t trenako-web-api:latest .
+  docker build \
+    -f .docker/dev.dockerfile \
+    -t trenako-web-api:latest .
 ```
 
 ```bash

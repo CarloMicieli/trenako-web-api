@@ -11,4 +11,4 @@ set-cargo-version ./workspace/webapi/Cargo.toml $CRATE_VERSION
 cargo build --release
 mkdir release && cp target/release/trenako-web-api release
 
-docker build -f webapi.dockerfile -t latest -t $1 -t $CRATE_VERSION .
+docker build -f ./.docker/webapi.dockerfile -t latest -t $1 -t $CRATE_VERSION .
