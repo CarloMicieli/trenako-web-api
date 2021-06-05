@@ -1,22 +1,12 @@
 {
     "branches": [
          {"name": "main"},
-         {"name": "dev", "channel": "dev", "prerelease": "devel"},
+         {"name": "dev", "channel": "dev", "prerelease": "devel"}
     ],
     "repositoryUrl": "https://github.com/CarloMicieli/trenako-web-api",
     "debug": "true",
     "plugins": [
-        [
-            "@semantic-release/commit-analyzer",
-            {
-                "preset": "conventionalcommits",
-                "releaseRules": [
-                    {"type": "build", "release": "no-release"},
-                    {"type": "ci", "release": "no-release"},
-                    {"type": "docs", "release": "no-release"},
-                ]
-            }
-        ],
+        "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
         [
             "@semantic-release/changelog",
@@ -36,10 +26,10 @@
             {
                 "assets": [
                     "CHANGELOG.md",
-                    "./sources/catalog/Cargo.toml",
-                    "./sources/collecting/Cargo.toml",
-                    "./sources/social/Cargo.toml",
-                    "./sources/webapi/Cargo.toml"
+                    "./catalog/Cargo.toml",
+                    "./collecting/Cargo.toml",
+                    "./social/Cargo.toml",
+                    "./webapi/Cargo.toml"
                 ]
             }
         ],

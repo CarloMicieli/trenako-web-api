@@ -16,6 +16,26 @@ A web api for model railway collections
 * `Cargo`
 * `Docker` / `Docker compose`
 
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/CarloMicieli/trenako-web-api.git
+```
+
+Go to the project directory
+
+```bash
+  cd trenako-web-api
+```
+
+## Project layout
+
+* `db`: database migrations
+* `openapi`: open api 3.0 schema for the web api
+* `sources`: the service sources
+
 ## Installation 
 
 To begin install `rustup`
@@ -30,20 +50,6 @@ To begin install `rustup`
   cargo install sqlx-cli --no-default-features --features postgres
   rustup component add clippy
   rustup component add rustfmt
-```
-
-## Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/CarloMicieli/trenako-web-api.git
-```
-
-Go to the project directory
-
-```bash
-  cd trenako-web-api
 ```
 
 ### Cargo Commands

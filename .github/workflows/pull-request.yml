@@ -6,13 +6,10 @@ env:
   CARGO_INCREMENTAL: 0
   RUSTFLAGS: -D warnings
 
-defaults:
-  run:
-    working-directory: ./sources
-
 jobs:
   build:
     runs-on: ubuntu-20.04
+
     steps:
       - name: Check out the repocatalog
         uses: actions/checkout@v2
