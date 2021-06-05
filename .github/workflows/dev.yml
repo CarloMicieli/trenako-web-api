@@ -109,6 +109,6 @@ jobs:
           working-directory: acceptance-tests
       
       - name: Build & run tests with Gradle
+        working-directory: acceptance-tests
         run: ./gradlew check
-        with:
-          working-directory: acceptance-tests
+          
