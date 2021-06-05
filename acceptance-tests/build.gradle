@@ -57,11 +57,6 @@ tasks.named("test") {
     failFast = false
 }
 
-testlogger {
-    theme "mocha"
-    slowThreshold 5000
-}
-
 application {
     mainClass.set("com.trenako.Application")
 }
