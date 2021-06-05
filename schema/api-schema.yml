@@ -1,0 +1,2492 @@
+---
+openapi: "3.0.1"
+info:
+  title: Trenako
+  description: A model railway collections api
+  version: 1.0.0
+  termsOfService: http://www.trenako.com/terms
+  contact:
+    email: mail@trenako.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:5000
+    description: local
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/accounts:
+    post:
+      summary: create a new user account
+      tags:
+        - accounts
+      operationId: createAccount
+      requestBody:
+        description: a new account
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+      responses:
+        "200":
+          description: a new account has been created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          description: the account already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/authentications:
+    post:
+      summary: authenticate a user
+      tags:
+        - accounts
+      operationId: authenticateUser
+      requestBody:
+        description: the login information for account to authenticate
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+      responses:
+        "200":
+          description: an authentication
+          content:
+            "application/vnd.trenako.authentication+json":
+              schema:
+                $ref: "#/components/schemas/Authentication"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/brands:
+    get:
+      summary: get the list of brands
+      tags:
+        - brands
+      operationId: getBrands
+      responses:
+        "200":
+          description: ok
+          content:
+            "application/vnd.trenako.brands+json":
+              schema:
+                $ref: "#/components/schemas/Brands"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: brands were not found
+        "500":
+          $ref: "#/components/responses/Error"
+    post:
+      summary: create a new model railway brand
+      tags:
+        - brands
+      operationId: createBrand
+      requestBody:
+        description: a new brand
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/BrandRequest"
+      responses:
+        "201":
+          description: new brand created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly created brand
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the brand already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/brands/{brand_id}:
+    get:
+      summary: get a brand
+      tags:
+        - brands
+      operationId: getBrand
+      parameters:
+        - name: brand_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.brand+json":
+              schema:
+                $ref: "#/components/schemas/Brand"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: brand was not found
+        "500":
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: delete a brand
+      tags:
+        - brands
+      operationId: deleteBrand
+      parameters:
+        - name: brand_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: brand was removed
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: brand to remove not found
+        "409":
+          description: brand is in use
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: update a brand
+      tags:
+        - brands
+      operationId: updateBrand
+      parameters:
+        - name: brand_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: the updated brand
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/BrandRequest"
+      responses:
+        "204":
+          description: a new brand has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly created brand
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the brand already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/railways:
+    get:
+      summary: get the list of railways
+      tags:
+        - railways
+      operationId: getRailways
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.railways+json":
+              schema:
+                $ref: "#/components/schemas/Railways"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: railways were not found
+        "500":
+          $ref: "#/components/responses/Error"
+    post:
+      summary: create a new railway
+      tags:
+        - railways
+      operationId: createRailway
+      requestBody:
+        description: a new railway
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RailwayRequest"
+      responses:
+        "201":
+          description: a new railway has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly created railway
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the railway already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/railways/{railway_id}:
+    get:
+      summary: get a railway
+      tags:
+        - railways
+      operationId: getRailway
+      parameters:
+        - name: railway_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.railway+json":
+              schema:
+                $ref: "#/components/schemas/Railway"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: railway was not found
+        "500":
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: delete a railway
+      tags:
+        - railways
+      operationId: deleteRailway
+      parameters:
+        - name: railway_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: railway was removed
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: railway to remove not found
+        "409":
+          description: railway is in use
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: update a railway
+      tags:
+        - railways
+      operationId: updateRailway
+      parameters:
+        - name: railway_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: a new railway
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/RailwayRequest"
+      responses:
+        "204":
+          description: the railway has been updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/scales:
+    get:
+      summary: get the list of scales
+      tags:
+        - scales
+      operationId: getScales
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.scales+json":
+              schema:
+                $ref: "#/components/schemas/Scales"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: no scales were found
+        "500":
+          $ref: "#/components/responses/Error"
+    post:
+      summary: create a new scale
+      tags:
+        - scales
+      operationId: createScale
+      requestBody:
+        description: a new scale
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScaleRequest"
+      responses:
+        "201":
+          description: a new scale has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the newly scale railway
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the scale already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/scales/{scale_id}:
+    get:
+      summary: get a scale
+      tags:
+        - scales
+      operationId: getScale
+      parameters:
+        - name: scale_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.scale+json":
+              schema:
+                $ref: "#/components/schemas/Scale"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: scale with scaleId was not found
+        "500":
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: delete a scale
+      tags:
+        - scales
+      operationId: deleteScale
+      parameters:
+        - name: scale_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: scale was removed
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: scale to remove was not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "409":
+          description: scale is in use
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: updates a scale
+      tags:
+        - scales
+      operationId: updateScale
+      parameters:
+        - name: scale_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: the updated scale
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/ScaleRequest"
+      responses:
+        "204":
+          description: the scale has been updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the scale already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/catalog-items:
+    post:
+      summary: create a new catalog item
+      tags:
+        - catalog-items
+      operationId: createCatalogItem
+      requestBody:
+        description: a new catalog item
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogItemRequest"
+      responses:
+        "201":
+          description: a new catalog item has been created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new catalog item
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the catalog item already exists, brand or scale not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/catalog-items/{catalog_item_id}:
+    get:
+      summary: get a catalog item
+      tags:
+        - catalog-items
+      operationId: getCatalogItem
+      parameters:
+        - name: catalog_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.catalog.item+json":
+              schema:
+                $ref: "#/components/schemas/CatalogItem"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: catalog item not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: update a catalog item
+      tags:
+        - catalog-items
+      operationId: updateCatalogItem
+      parameters:
+        - name: catalog_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: the updated catalog item
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CatalogItemRequest"
+      responses:
+        "204":
+          description: catalog item updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: catalog item not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "409":
+          description: brand or scale not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/catalog-items/{catalog_item_id}/rolling-stocks:
+    post:
+      summary: create a new rolling stock for a catalog item
+      tags:
+        - catalog-items
+      operationId: addRollingStock
+      parameters:
+        - name: catalog_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: a new rolling stock
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RollingStockRequest"
+      responses:
+        "201":
+          description: rolling stock created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new rolling stock
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: catalog item not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "409":
+          description: railway not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/catalog-items/{catalog_item_id}/rolling-stocks/{rolling_stock_id}:
+    delete:
+      summary: delete the rolling stock from the catalog item
+      tags:
+        - catalog-items
+      operationId: deleteRollingStock
+      parameters:
+        - name: catalog_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: rolling_stock_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: urn
+      responses:
+        "204":
+          description: rolling stock deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: either catalog item or rolling stock to remove not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+    put:
+      summary: update the rolling stock in the catalog item
+      tags:
+        - catalog-items
+      operationId: updateRollingStock
+      parameters:
+        - name: catalog_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: rolling_stock_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: urn
+      responses:
+        "204":
+          description: rolling stock updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: either catalog item or rolling stock not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "409":
+          description: railway not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/shops:
+    get:
+      summary: get shops
+      tags:
+        - shops
+      operationId: getShops
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.shops+json":
+              schema:
+                $ref: "#/components/schemas/Shops"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: shops not found
+        "500":
+          $ref: "#/components/responses/Error"
+    post:
+      summary: create a new shop
+      tags:
+        - shops
+      operationId: createShop
+      requestBody:
+        description: a new shop
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShopRequest"
+      responses:
+        "201":
+          description: new shop created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new shop
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: the shop already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/shops/{shop_id}:
+    get:
+      summary: get a shop
+      tags:
+        - shops
+      operationId: getShop
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.shop+json":
+              schema:
+                $ref: "#/components/schemas/Shop"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: shops not found
+        "500":
+          $ref: "#/components/responses/Error"
+    post:
+      summary: update a shop
+      tags:
+        - shops
+      operationId: updateShop
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: the shop to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShopRequest"
+      responses:
+        "204":
+          description: shop updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: shop not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "409":
+          description: shop already exists
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/favourite-shops:
+    get:
+      summary: get favourite shops for the current user
+      tags:
+        - shops
+      operationId: getFavouriteShops
+      responses:
+        "200": 
+          description: OK
+          content:
+            "application/vnd.trenako.favourite.shops+json":
+              schema:
+                $ref: "#/components/schemas/FavouriteShops"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"                
+        "404":
+          description: no favourite shop found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "500":
+          $ref: "#/components/responses/Error"        
+    post:
+      summary: add shop to the user favourites
+      tags:
+        - shops
+      operationId: addShopToFavourites
+      responses:
+        "204":
+          description: added to favourites
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: no favourite shop found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/favourite-shops/{shop_id}:
+    delete:
+      summary: delete the shop from the user favourites
+      tags:
+        - shops
+      operationId: deleteShopFromFavourites
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+      responses:
+        "204":
+          description: removed from favourites
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: shop not found among the favourites
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "500":
+          $ref: "#/components/responses/Error"      
+
+  /api/collections:
+    post:
+      summary: create a new collection
+      tags:
+        - collections
+      operationId: createCollection
+      requestBody:
+        description: a new collection
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CollectionRequest"
+      responses:
+        "201":
+          description: collection created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new collection
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: user has already a collection
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+  
+  /api/collections/{collection_id}:
+    get:
+      summary: get collection for the current user
+      tags:
+        - collections
+      operationId: getCollection
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.collection+json":
+              schema:
+                $ref: "#/components/schemas/Collection"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "500":
+          $ref: "#/components/responses/Error"                
+    put:
+      summary: update a collection
+      tags:
+        - collections
+      operationId: updateCollection
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: a new collection
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CollectionRequest"
+      responses:
+        "204":
+          description: collection updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: delete a collection
+      tags:
+        - collections
+      operationId: deleteCollection
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: collection deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/collections/{collection_id}/statistics:
+    get:
+      summary: get collection statistics for the current user
+      tags:
+        - collections
+      operationId: getCollectionStatistics
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.collection.statistics+json":
+              schema:
+                $ref: "#/components/schemas/CollectionStatistics"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"          
+        "500":
+          $ref: "#/components/responses/Error"    
+
+  /api/collections/{collection_id}/items:
+    post:
+      summary: add new element to the collection
+      tags:
+        - collections
+      operationId: addCollectionItem
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: a new collection item
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CollectionItemRequest"
+      responses:
+        "201":
+          description: item added to the collection
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new collection item          
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection or shop not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"    
+        "409":
+          description: collection item not found      
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"              
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"      
+
+  /api/collections/{collection_id}/items/{item_id}:
+    put:
+      summary: update collection item
+      tags:
+        - collections
+      operationId: editCollectionItem
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: the updated collection item
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CollectionItemRequest"
+      responses:
+        "204":
+          description: collection item updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection or shop not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"    
+        "409":
+          description: collection or collection item not found      
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"              
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"    
+    delete:
+      summary: delete item from collection
+      tags:
+        - collections
+      operationId: deleteCollectionItem
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: collection item deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: collection or shop not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"    
+        "409":
+          description: collection or collection item not found      
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"              
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"    
+
+  /api/wishlists:
+    post:
+      summary: create a new wishlist for the current user
+      tags:
+        - wishlists
+      operationId: createWishlist
+      requestBody:
+        description: a new wishlist
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/WishlistRequest"
+      responses:
+        "201":
+          description: wishlist created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+              description: the uri for the new wishlist
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: user has already a wishlist with the same name
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"      
+
+  /api/wishlists/{wishlist_id}:
+    get:
+      summary: get the wishlist
+      tags:
+        - wishlists
+      operationId: getWishlist
+      parameters:      
+        - name: wishlist_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.wishlist+json":
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: wishlist not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"    
+        "500":
+          $ref: "#/components/responses/Error"      
+    delete:
+      summary: delete the wishlist
+      tags:
+        - wishlists
+      operationId: deleteWishlist
+      parameters:      
+        - name: wishlist_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+      responses:
+        "204":
+          description: wishlist deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: wishlist not found
+          content:
+            "application/vnd.trenako.problem+json":
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"    
+        "500":
+          $ref: "#/components/responses/Error"   
+    put:
+      summary: update wishlist
+      tags:
+        - wishlists
+      operationId: updateWishlist
+      parameters:      
+        - name: wishlist_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid         
+      requestBody:
+        description: updated wishlist
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/WishlistRequest"
+      responses:
+        "204":
+          description: wishlist updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"   
+
+  /api/wishlists/{wishlist_id}/items/{item_id}:
+    put:
+      summary: update wishlist item
+      tags:
+        - wishlists
+      operationId: updateWishlistItem
+      parameters:      
+        - name: wishlist_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid   
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid                      
+      requestBody:
+        description: updated wishlist item
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/WishlistItemRequest"
+      responses:
+        "204":
+          description: wishlist item updated
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: wishlist or item not found          
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"     
+    delete:
+      summary: delete item from wishlist
+      tags:
+        - wishlists
+      operationId: deleteWishlistItem
+      parameters:      
+        - name: wishlist_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid    
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid      
+      requestBody:
+        description: a new wishlist item
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/WishlistItemRequest"
+      responses:
+        "204":
+          description: wishlist item deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: wishlist or item not found
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/Error"     
+
+  /api/wishlists/owner/{owner}:
+    get:
+      summary: get wishlists by owner
+      tags:
+        - wishlists
+      operationId: getWishlistsByOwner
+      parameters:      
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/vnd.trenako.collection.statistics+json":
+              schema:
+                $ref: "#/components/schemas/Wishlists"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: wishlist not found
+        "500":
+          $ref: "#/components/responses/Error"    
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequest:
+      description: the request is not valid
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    Error:
+      description: an error has occurred
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    UnprocessableEntity:
+      description: the request is unprocessable
+      content:
+        "application/vnd.trenako.problem+json":
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
+  schemas:
+    AccountRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 4
+          maxLength: 50
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 50
+        mail_address:
+          type: string
+          format: email
+      required:
+        - username
+        - password
+    Address:
+      description: an address of a location
+      type: object
+      properties:
+        address_line1:
+          type: string
+          maxLength: 250
+        address_line2:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 10
+        country:
+          type: string
+          maxLength: 2
+      required:
+        - address_line1
+        - city
+        - postal_code
+        - country
+    Authentication:
+      type: object
+      properties:
+        username:
+          type: string
+        token:
+          type: string
+      required:
+        - username
+        - token
+    AuthenticationRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 4
+          maxLength: 50
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 50
+      required:
+        - username
+        - password
+    Brand:
+      description: a model railways manufacturer
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+          maxLength: 25
+        company_name:
+          type: string
+        group_name:
+          type: string
+        mail_addess:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: "#/components/schemas/Address"
+        kind:
+          type: string
+          enum:
+            - INDUSTRIAL
+            - BRASS_MODELS
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - OUT_OF_BUSINESS
+    BrandRequest:
+      description: a model railways manufacturer
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 25
+        company_name:
+          type: string
+        group_name:
+          type: string
+        description:
+          type: string
+          maxLength: 1000
+        mail_addess:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: "#/components/schemas/Address"
+        kind:
+          type: string
+          enum:
+            - INDUSTRIAL
+            - BRASS_MODELS
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - OUT_OF_BUSINESS
+      required:
+        - name
+        - kind
+    Brands:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Brand"
+    CatalogItem:
+      type: object
+      properties:
+        brand:
+          $ref: "#/components/schemas/CatalogItemBrand"
+        item_number:
+          type: string
+        scale:
+          $ref: "#/components/schemas/CatalogItemScale"
+        description:
+          type: string
+        prototype_description:
+          type: string
+        model_description:
+          type: string
+        delivery_date:
+          type: string
+        available:
+          type: boolean
+        power_method:
+          type: string
+          enum:
+            - DC
+            - AC
+            - TRIX_EXPRESS
+            - NONE
+        category:
+          type: string
+          enum:
+            - STEAM_LOCOMOTIVE
+            - DIESEL_LOCOMOTIVE
+            - ELECTRIC_LOCOMOTIVE
+            - RAILCAR
+            - ELECTRIC_MULTIPLE_UNIT
+            - FREIGHT_CAR
+            - PASSENGER_CAR
+            - TRAIN_SET
+            - STARTER_SET
+        rolling_stocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/RollingStock"
+        created_at:
+          description: when got this catalog item created
+          type: string
+          format: "date-time"
+        modified_at:
+          description: when got this catalog item last updated
+          type: string
+          format: "date-time"
+      required:
+        - brand
+        - item_number
+        - scale
+        - description
+    CatalogItemBrand:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+      required:
+        - _links
+        - name
+    CatalogItemRequest:
+      type: object
+      properties:
+        brand:
+          type: string
+          minLength: 3
+          maxLength: 25
+        item_number:
+          type: string
+          minLength: 3
+          maxLength: 10
+        scale:
+          type: string
+        description:
+          type: string
+          maxLength: 250
+        prototype_description:
+          type: string
+          maxLength: 1000
+        model_description:
+          type: string
+          maxLength: 1000
+        delivery_date:
+          type: string
+        available:
+          type: boolean
+        power_method:
+          type: string
+          enum:
+            - DC
+            - AC
+            - TRIX_EXPRESS
+            - NONE
+        category:
+          type: string
+          enum:
+            - STEAM_LOCOMOTIVE
+            - DIESEL_LOCOMOTIVE
+            - ELECTRIC_LOCOMOTIVE
+            - RAILCAR
+            - ELECTRIC_MULTIPLE_UNIT
+            - FREIGHT_CAR
+            - PASSENGER_CAR
+            - TRAIN_SET
+            - STARTER_SET
+        rolling_stocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/RollingStock"
+        created_at:
+          description: when got this catalog item created
+          type: string
+          format: "date-time"
+        modified_at:
+          description: when got this catalog item last updated
+          type: string
+          format: "date-time"
+      required:
+        - brand
+        - item_number
+        - scale
+        - description
+    CatalogItemScale:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+      required:
+        - _links
+        - name
+    Collection:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        owner:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionItem"
+    CollectionItem:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        catalog_item:
+          type: object
+          properties:
+            _links:
+              $ref: "#/components/schemas/Self"
+            brand:
+              type: string
+            item_number:
+              type: string
+            category:
+              type: string
+            description:
+              type: string
+        condition:
+          type: string
+          enum:
+            - NEW
+            - PRE_OWNED
+        price:
+          $ref: "#/components/schemas/Price"
+        purchased_at:
+          type: object
+          properties:
+            _links:
+              $ref: "#/components/schemas/Self"
+            shop:
+              type: string
+        added_date:
+          type: string
+          format: date
+        notes:
+          type: string
+    CollectionStatistics:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        owner:
+          type: string
+        modified_date: 
+          type: string
+          format: date-time
+        total_value:
+          $ref: "#/components/schemas/Price"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              category: 
+                type: string
+              count:
+                type: integer
+                format: int32
+              year:
+                type: integer
+                format: int32
+              total_value:
+                $ref: "#/components/schemas/Price"
+      required:
+        - _links
+        - owner
+        - total_value
+    CollectionRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+    CollectionItemRequest:
+      type: object
+      properties:
+        catalog_item_id:
+          type: string
+        shop_id:
+          type: string
+          format: uuid
+        price:
+          $ref: "#/components/schemas/Price"
+        condition:
+          type: string
+          enum:
+            - NEW
+            - PRE_OWNED
+        added_date:
+          type: string
+          format: date
+        notes:
+          type: string
+      required:
+        - catalog_item_id
+    FavouriteShops:        
+      type: object
+      properties:
+        owner:
+          type: string
+        shops:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shop'
+      required:
+        - owner
+    LengthOverBuffer:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: float
+        inches:
+          type: number
+          format: float
+    Pagination:
+      type: object
+      properties:
+        _self:
+          description: pagination link pointing to the current page
+          type: string
+          format: uri
+        prev:
+          description: pagination link pointing to the previous page
+          type: string
+          format: uri
+        next:
+          description: pagination link pointing to the next page
+          type: string
+          format: uri
+      example:
+        _self: "http://mysite/current-page"
+        prev: "http://mysite/previous-page"
+        next: "http://mysite/next-page"
+    PeriodOfActivity:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+        operating_since:
+          type: string
+          format: date
+        operating_until:
+          type: string
+          format: date
+    Price:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - value
+        - currency
+    ProblemDetail:
+      description: |
+        A machine-readable format for specifying errors in HTTP API 
+        responses based on https://tools.ietf.org/html/rfc7807
+      type: object
+      properties:
+        type:
+          type: string
+          description: |
+            A URI reference [RFC3986] that identifies the problem type. This specification 
+            encourages that, when dereferenced, it provide human-readable documentation for the 
+            problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, 
+            its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: |
+            A short, human-readable summary of the problem type.It SHOULD NOT change from occurrence 
+            to occurrence of the problem, except for purposes of localization(e.g., using proactive 
+            content negotiation; see[RFC7231], Section 3.4).
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+        instance:
+          type: string
+          format: urn
+          description: |
+            A URI reference that identifies the specific occurrence of the problem. 
+            It may or may not yield further information if dereferenced.
+        extensions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Problem type definitions MAY extend the problem details object with additional members.
+    Railway:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        company_name:
+          type: string
+          maxLength: 250
+        country:
+          type: string
+          maxLength: 2
+        description:
+          type: string
+          maxLength: 1000
+        total_length:
+          $ref: "#/components/schemas/TotalLength"
+        period_of_activity:
+          $ref: "#/components/schemas/PeriodOfActivity"
+        railway_gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        headquarters:
+          type: string
+          maxLength: 100
+        logo_url:
+          type: string
+          format: uri
+        website_url:
+          type: string
+          maxLength: 250
+          format: uri
+      required:
+        - name
+        - country
+    RailwayGauge:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: float
+        inches:
+          type: number
+          format: float
+        gauge:
+          type: string
+          enum:
+            - NARROW
+            - STANDARD
+      example:
+        millimeters: 16.5
+        inches: 0.65
+        gauge: standard
+    RailwayRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        company_name:
+          type: string
+          maxLength: 250
+        country:
+          type: string
+          maxLength: 2
+        description:
+          type: string
+          maxLength: 1000
+        total_length:
+          $ref: "#/components/schemas/TotalLength"
+        period_of_activity:
+          $ref: "#/components/schemas/PeriodOfActivity"
+        railway_gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        headquarters:
+          type: string
+          maxLength: 100
+        logo_url:
+          type: string
+          format: uri
+        website_url:
+          type: string
+          maxLength: 250
+          format: uri
+      required:
+        - name
+        - country
+    Railways:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Railway"
+    RollingStock:
+      type: object
+      properties:
+        rolling_stock_id:
+          type: string
+          format: urn
+        epoch:
+          type: string
+        length_over_buffer:
+          $ref: "#/components/schemas/LengthOverBuffer"
+        min_radius:
+          type: number
+          format: float
+        railway:
+          $ref: "#/components/schemas/RollingStockRailway"
+        class_name:
+          type: string
+        road_number:
+          type: string
+        type_name:
+          type: string
+        series:
+          type: string
+        livery:
+          type: string
+        depot:
+          type: string
+        couplers:
+          type: string
+          enum:
+            - NEM_352
+            - NEM_355
+            - NEM_356
+            - NEM_357
+            - NEM_358
+            - NEM_360
+            - NEM_362
+            - NEM_363
+            - NEM_364
+            - NEM_370
+        dcc_interface:
+          type: string
+          enum:
+            - NONE
+            - NEM_651
+            - NEM_652,
+            - PLUX_8,
+            - PLUX_16,
+            - PLUX_22,
+            - NEXT_18,
+            - MTC_21
+        control:
+          type: string
+          enum:
+            - NONE
+            - DCC_READY
+            - DCC_FITTED
+            - DCC_SOUND
+        category:
+          type: string
+          enum:
+            - STEAM_LOCOMOTIVE
+            - DIESEL_LOCOMOTIVE
+            - ELECTRIC_LOCOMOTIVE
+            - RAILCAR
+            - ELECTRIC_MULTIPLE_UNIT
+            - FREIGHT_CAR
+            - PASSENGER_CAR
+        service_level:
+          type: string
+        passenger_car_type:
+          type: string
+        freight_car_type:
+          type: string
+    RollingStockRailway:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+      required:
+        - _links
+        - name
+    RollingStockRequest:
+      type: object
+      properties:
+        epoch:
+          type: string
+        length_over_buffer:
+          $ref: "#/components/schemas/LengthOverBuffer"
+        min_radius:
+          type: number
+          format: float
+        railway:
+          type: string
+        class_name:
+          type: string
+        road_number:
+          type: string
+        type_name:
+          type: string
+        series:
+          type: string
+        livery:
+          type: string
+        depot:
+          type: string
+        couplers:
+          type: string
+          enum:
+            - NEM_352
+            - NEM_355
+            - NEM_356
+            - NEM_357
+            - NEM_358
+            - NEM_360
+            - NEM_362
+            - NEM_363
+            - NEM_364
+            - NEM_370
+        dcc_interface:
+          type: string
+          enum:
+            - NONE
+            - NEM_651
+            - NEM_652,
+            - PLUX_8,
+            - PLUX_16,
+            - PLUX_22,
+            - NEXT_18,
+            - MTC_21
+        control:
+          type: string
+          enum:
+            - NONE
+            - DCC_READY
+            - DCC_FITTED
+            - DCC_SOUND
+        category:
+          type: string
+          enum:
+            - STEAM_LOCOMOTIVE
+            - DIESEL_LOCOMOTIVE
+            - ELECTRIC_LOCOMOTIVE
+            - RAILCAR
+            - ELECTRIC_MULTIPLE_UNIT
+            - FREIGHT_CAR
+            - PASSENGER_CAR
+        service_level:
+          type: string
+        passenger_car_type:
+          type: string
+        freight_car_type:
+          type: string
+      required:
+        - railway
+        - category
+        - epoch
+    Scale:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        description:
+          type: string
+          maxLength: 1000
+        ratio:
+          type: number
+          format: float
+        gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        standard:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - ratio
+    ScaleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        description:
+          type: string
+          maxLength: 1000
+        ratio:
+          type: number
+          format: float
+        gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        standard:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - ratio
+    Scales:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scale"
+    Self:
+      type: object
+      properties:
+        _self:
+          type: string
+          format: uri
+        slug:
+          type: string
+      required:
+        - _self
+        - slug
+    Shop:
+      type: object
+      properties:
+        _self:
+          $ref: "#/components/schemas/Self"
+        name:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        phone_number:
+          type: string
+        mail_addess:
+          type: string
+          format: email
+        address:
+          $ref: "#/components/schemas/Address"
+    ShopRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        phone_number:
+          type: string
+        mail_addess:
+          type: string
+          format: email
+        address:
+          $ref: "#/components/schemas/Address"
+      required:
+        - name
+    Shops:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Shop"
+    TotalLength:
+      type: object
+      properties:
+        miles:
+          type: number
+          format: float
+        kilometers:
+          type: number
+          format: float
+    Wishlist:
+      type: object
+      properties:
+        owner:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - PRIVATE
+            - PUBLIC
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              wishlist_item_id:
+                type: string
+                format: urn
+              catalog_item:
+                type: object
+                properties:
+                  _links:
+                    $ref: "#/components/schemas/Self"
+              added_date:
+                type: string
+                format: date
+              price:
+                $ref: "#/components/schemas/Price"
+              priority:
+                type: string
+                enum:
+                  - HIGH
+                  - NORMAL
+                  - LOW
+              notes:
+                type: string  
+    WishlistRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - PUBLIC
+            - PRIVATE
+        budget:
+          $ref: "#/components/schemas/Budget"
+    WishlistItemRequest:
+      type: object
+      properties:
+        catalog_item_id:
+          type: string
+        added_date:
+          type: string
+          format: date
+        price:
+          $ref: "#/components/schemas/Price"
+        priority:
+          type: string
+          enum:
+            - HIGH
+            - NORMAL
+            - LOW
+        notes:
+          type: string
+    Wishlists:
+      type: object
+      properties:
+        owner:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - ALL
+            - PRIVATE
+            - PUBLIC
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              _links:
+                $ref: "#/components/schemas/Self"
+              name:
+                type: string
+              visibility:
+                type: string
+                enum:
+                  - PRIVATE
+                  - PUBLIC
+    Budget:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - value
+        - currency
