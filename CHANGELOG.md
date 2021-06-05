@@ -1,5 +1,17 @@
 # Trenako Web Api Changelog
 
+# [0.3.0](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.3...v0.3.0) (2021-06-05)
+
+
+### Bug Fixes
+
+* **settings:** add rustdoc to settings struct ([0aa97c7](https://github.com/CarloMicieli/trenako-web-api/commit/0aa97c7b4f2fc8cf0e51c7bcf350b63a0512e040))
+
+
+### Features
+
+* add database migrations ([edf83b9](https://github.com/CarloMicieli/trenako-web-api/commit/edf83b9cfaf29a2540956197f184d3ea0bce1120))
+
 ## [0.2.4](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.3...v0.2.4) (2021-06-05)
 
 
