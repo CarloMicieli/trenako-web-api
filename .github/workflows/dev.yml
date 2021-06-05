@@ -81,7 +81,7 @@ jobs:
       - name: Copy build output
         run: |
           mkdir release
-          cp trenako-web-api release
+          cp ./trenako-web-api release
 
       - name: Build docker image for the service
         uses: docker/build-push-action@v2
