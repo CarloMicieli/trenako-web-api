@@ -1,5 +1,5 @@
 name: dev
-on: 
+on:
   push:
     branches:
       - dev
@@ -12,7 +12,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-20.04
-        
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -49,3 +49,62 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: trenako-web-api
+          path: target/debug/trenako-web-api
+
+  acceptance:
+    runs-on: ubuntu-20.04
+    needs: build
+    defaults:
+      run:
+        working-directory: acceptance-tests
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Download build output
+        uses: actions/download-artifact@v2
+        with:
+          name: trenako-web-api
+
+      - name: Copy build output
+        run: |
+          mkdir release
+          cp trenako-web-api release
+
+      - name: Build docker image for the service
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false
+          tags: trenako-web-api:latest
+          file: .docker/webapi.dockerfile
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build & run tests with Gradle
+        run: ./gradlew check
