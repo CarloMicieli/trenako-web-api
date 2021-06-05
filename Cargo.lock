@@ -359,7 +359,7 @@ dependencies = [
 
 [[package]]
 name = "catalog"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "anyhow",
  "thiserror",
@@ -392,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "collecting"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "anyhow",
  "thiserror",
@@ -1732,7 +1732,7 @@ checksum = "fe0f37c9e8f3c5a4a66ad655a93c74daac4ad00c441533bf5c6e7990bb42604e"
 
 [[package]]
 name = "social"
-version = "0.2.3"
+version = "0.2.4"
 
 [[package]]
 name = "socket2"
@@ -2474,7 +2474,7 @@ dependencies = [
 
 [[package]]
 name = "webapi"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "actix-http",
  "actix-rt",
