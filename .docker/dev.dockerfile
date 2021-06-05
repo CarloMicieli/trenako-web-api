@@ -25,6 +25,9 @@ RUN cargo build --release --bin trenako-web-api
 FROM debian:buster-slim as runtime
 ARG APP=/usr/src/app
 
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/health || exit 1
+
 RUN apt-get update \
     && apt-get install -y ca-certificates tzdata \
     && rm -rf /var/lib/apt/lists/*
