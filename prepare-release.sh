@@ -3,6 +3,8 @@
 # Get version number from version tag
 CRATE_VERSION=`echo $1 | cut -d'v' -f2`
 
+cd ./sources
+
 set-cargo-version ./catalog/Cargo.toml $CRATE_VERSION
 set-cargo-version ./collecting/Cargo.toml $CRATE_VERSION
 set-cargo-version ./social/Cargo.toml $CRATE_VERSION

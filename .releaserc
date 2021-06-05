@@ -36,10 +36,10 @@
             {
                 "assets": [
                     "CHANGELOG.md",
-                    "./catalog/Cargo.toml",
-                    "./collecting/Cargo.toml",
-                    "./social/Cargo.toml",
-                    "./webapi/Cargo.toml"
+                    "./sources/catalog/Cargo.toml",
+                    "./sources/collecting/Cargo.toml",
+                    "./sources/social/Cargo.toml",
+                    "./sources/webapi/Cargo.toml"
                 ]
             }
         ],

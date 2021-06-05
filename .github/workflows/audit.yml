@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '58 23 * * *'
 
+defaults:
+  run:
+    working-directory: ./sources
+
 jobs:
   security_audit:
     runs-on: ubuntu-latest

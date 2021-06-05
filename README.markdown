@@ -12,7 +12,7 @@ A web api for model railway collections
 
 ## Tech Stack
 
-* 🦀 `Rust` 1.51
+* 🦀 `Rust` 1.52
 * `Cargo`
 * `Docker` / `Docker compose`
 
