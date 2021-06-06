@@ -1,5 +1,12 @@
 # Trenako Web Api Changelog
 
+# [0.4.0](https://github.com/CarloMicieli/trenako-web-api/compare/v0.3.0...v0.4.0) (2021-06-06)
+
+
+### Features
+
+* add database migrations ([f1caa9c](https://github.com/CarloMicieli/trenako-web-api/commit/f1caa9c3bebaec7b0886dbcfa9c4609df0ad9d6b))
+
 # [0.3.0](https://github.com/CarloMicieli/trenako-web-api/compare/v0.2.3...v0.3.0) (2021-06-05)
 
 
