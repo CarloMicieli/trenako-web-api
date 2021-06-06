@@ -53,9 +53,7 @@
                 ],
                 "dockerImage": "trenako-web-api",
                 "dockerFile": ".docker/webapi.dockerfile",
-                "dockerRegistry": "dockerhub",
                 "dockerProject": "carlomicieli",
-                "dockerLogin": true,
                 "dockerArgs": {
                     API_TOKEN: true,
                     RELEASE_VERSION: "{next.version}"
