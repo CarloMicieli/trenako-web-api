@@ -42,6 +42,20 @@
                     }
                 ]
             }
+        ],
+        [
+            "@codedependant/semantic-release-docker", 
+            {
+                dockerTags: ["latest", "{version}", "{major}.{minor}"],
+                dockerImage: "trenako-web-api",
+                dockerFile: ".docker/webapi.dockerfile",
+                dockerRegistry: "dockerhub",
+                dockerProject: "carlomicieli",
+                dockerArgs: {
+                    API_TOKEN: true,
+                    RELEASE_VERSION: "{next.version}"
+                }
+            }
         ]
     ]
 }
