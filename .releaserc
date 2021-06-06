@@ -46,12 +46,16 @@
         [
             "@codedependant/semantic-release-docker", 
             {
-                "dockerTags": ["latest", "{version}", "{major}.{minor}"],
+                "dockerTags": [
+                    "latest", 
+                    "{version}", 
+                    "{git_sha}"
+                ],
                 "dockerImage": "trenako-web-api",
                 "dockerFile": ".docker/webapi.dockerfile",
                 "dockerRegistry": "dockerhub",
                 "dockerProject": "carlomicieli",
-                "dockerLogin": false,
+                "dockerLogin": true,
                 "dockerArgs": {
                     API_TOKEN: true,
                     RELEASE_VERSION: "{next.version}"
