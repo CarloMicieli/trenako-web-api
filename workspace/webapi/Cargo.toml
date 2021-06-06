@@ -20,20 +20,27 @@ social = { path = "../social" }
 actix-http = "=3.0.0-beta.5"
 actix-service = "=2.0.0-beta.5"
 actix-web = "=4.0.0-beta.5"
+actix-web-validator = "2"
 
 config = "0.11"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde_derive = "1.0"
+chrono = { version = "0.4.15", features = ["serde"] }
+anyhow = "1"
+thiserror = "1"
+rust_decimal = { version = "1.8", features = ["serde-float"] }
+uuid = { version = "0.8.2", features = ["serde", "v4"] }
+validator = { version = "0.13", features = ["derive"] }
+derive_builder = "0.10"
+
+refinery = { version = "0.5", features = ["tokio-postgres"]}
 tracing = "0.1.19"
 tracing-futures = "0.2.4"
 tracing-subscriber = { version = "0.2.12", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.2"
 tracing-log = "0.1.1"
 tracing-actix-web = "0.4.0-beta.4"
-anyhow = "1"
-thiserror = "1"
-refinery = { version = "0.5", features = ["tokio-postgres"]}
 
 [dependencies.sqlx]
 version = "0.5"
@@ -52,3 +59,4 @@ reqwest = "0.11"
 tokio = "1"
 actix-rt = "2"
 testcontainers = "0.12.0"
+pretty_assertions = "0.7.2"
