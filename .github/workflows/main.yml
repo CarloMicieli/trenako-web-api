@@ -106,7 +106,7 @@ jobs:
                         @semantic-release/exec \
                         semantic-release/git \
                         semantic-release/release-notes-generator \
-                        @eclass/semantic-release-docker
+                        @codedependant/semantic-release-docker
 
       - name: Create release
         env:
