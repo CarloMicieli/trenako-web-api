@@ -3,6 +3,6 @@
 members = [
     "./workspace/collecting",
     "./workspace/catalog",
-    "./workspace/social",
+    "./workspace/hateoas",
     "./workspace/webapi",
 ]
