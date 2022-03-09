@@ -5,12 +5,12 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct Settings {
     database: DatabaseSettings,
-    app_port: u16,
+    server: ServerSettings,
 }
 
 impl Settings {
     pub fn get_address(&self) -> String {
-        format!("0.0.0.0:{}", self.app_port)
+        format!("{}:{}", self.server.host, self.server.port)
     }
 
     pub fn get_database_url(&self) -> String {
@@ -23,11 +23,19 @@ impl Settings {
 
     pub fn load() -> Result<Settings, config::ConfigError> {
         let s = Config::builder()
-            .add_source(File::with_name("config/application"))
-            .add_source(Environment::default())
+            .add_source(File::with_name("config/application").required(false))
+            .add_source(
+                Environment::default().separator("_").ignore_empty(true),
+            )
             .build()?;
         s.try_deserialize()
     }
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ServerSettings {
+    host: String,
+    port: u16,
 }
 
 /// Database settings
@@ -55,26 +63,6 @@ impl DatabaseSettings {
             port,
             name: name.to_owned(),
         }
-    }
-
-    pub fn username(&self) -> &str {
-        &self.username
-    }
-
-    pub fn password(&self) -> &str {
-        &self.password
-    }
-
-    pub fn host(&self) -> &str {
-        &self.host
-    }
-
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-
-    pub fn port(&self) -> u16 {
-        self.port
     }
 
     pub fn database_url(&self) -> String {

@@ -4,10 +4,6 @@ use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
-
 pub fn run(
     listener: TcpListener,
     db_pool: PgPool,
@@ -21,4 +17,8 @@ pub fn run(
     .listen(listener)?
     .run();
     Ok(server)
+}
+
+async fn health_check() -> impl Responder {
+    HttpResponse::Ok()
 }
