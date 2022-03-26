@@ -1,46 +1,85 @@
-version: '3.9'
-
+version: "3.9"
 services:
+  db:
+    image: postgres:14.2-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: trenakodb
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   db_admin:
     container_name: db_admin
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - 9000:80
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@mail.com
       PGADMIN_DEFAULT_PASSWORD: password
-    networks:
-      - new
-  db:
-    container_name: trenako_db
-    image: postgres:13.3-alpine
-    restart: always
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_DB: trenako
-      POSTGRES_PASSWORD: mysecretpassword
     volumes:
-      - postgres_data:/var/lib/postgres
+      - ./.docker/pgadmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+      - ./.docker/pgadmin/pgpass:/pgpass # passwords for the connections in this file
     networks:
-      - new
-  webapi:
-    container_name: webapi
-    build: .docker/dev.dockerfile
-    ports:
-      - 5000:5000
-    environment:
-      APP_PORT: 5000
-      DATABASE_URL: postgresql://postgres:mysecretpassword@db/trenako
-      SECRET_KEY: my-super-secret-key
-    depends_on:
-      - db
-    networks:
-      - new
+      - backend
 
-volumes:
-  postgres_data:
-    driver: local
+  db-migration:
+    image: ghcr.io/amacneil/dbmate:1
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./db:/db
+    environment:
+      DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/trenakodb?sslmode=disable
+      DBMATE_NO_DUMP_SCHEMA: 1
+      DBMATE_WAIT: 1
+      DBMATE_WAIT_TIMEOUT: 30s
+    networks:
+      - backend
+    command: up
+
+#  webapi:
+#    image: trenako-web-api
+#    build: .
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      db-migration:
+#        condition: service_started
+#    environment:
+#      SERVER_HOST: 0.0.0.0
+#      SERVER_PORT: 5000
+#      DATABASE_NAME: trenakodb
+#      DATABASE_USERNAME: postgres
+#      DATABASE_PASSWORD: mysecretpassword
+#      DATABASE_HOST: db
+#      DATABASE_PORT: 5432
+#    ports:
+#      - 5000:5000
+#    networks:
+#      - backend
+#    healthcheck:
+#      test: curl --fail http://localhost:5000/health || exit 1
+#      start_period: 10s
+#      interval: 60s
+#      timeout: 10s
+#      retries: 5
 
 networks:
-  new:
+  backend:
+
+volumes:
+  db-data:

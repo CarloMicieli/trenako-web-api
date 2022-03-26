@@ -98,7 +98,6 @@ To run the server:
 
 ### Database
 
-
 To run the migrations:
 
 ```bash
@@ -107,6 +106,15 @@ To run the migrations:
       amacneil/dbmate \
       --url "postgresql://postgres:mysecretpassword@<host_ip>:5432/trenako?sslmode=disable" \
       up
+```
+
+### OpenApi
+
+```bash
+  docker run --rm -p 8080:8080 \
+    -e API_URL=doc/trenako-open-api.yaml \
+    -v ${PWD}/openapi:/usr/share/nginx/html/doc \
+    swaggerapi/swagger-ui
 ```
 
 ## Deployment

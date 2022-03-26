@@ -1,0 +1,107 @@
+components:
+  schemas:
+    Address:
+      description: an address of a location
+      type: object
+      properties:
+        street_address:
+          type: string
+          maxLength: 250
+        extended_address:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 10
+        country_code:
+          type: string
+          description: the ISO country code
+          minLength: 2
+          maxLength: 2
+      required:
+        - street_address
+        - city
+        - postal_code
+        - country_code
+
+    ContactInfo:
+      description: contact info for a company or a shop
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 250
+        phone:
+          type: string
+          maxLength: 15
+        website_url:
+          type: string
+          format: uri
+
+    LocalizedText:
+      description: a map with localized text in different languages
+      type: object
+      additionalProperties:
+        type: string
+        properties:
+          code:
+            type: string
+            description: a valid ISO 639-1 language code
+            minLength: 2
+            maxLength: 2
+          text:
+            type: string
+            maxLength: 1000
+      example:
+        en: Hello!
+        fr: Bonjour!
+
+    Pagination:
+      type: object
+      properties:
+        _self:
+          description: pagination link pointing to the current page
+          type: string
+          format: uri
+        prev:
+          description: pagination link pointing to the previous page
+          type: string
+          format: uri
+        next:
+          description: pagination link pointing to the next page
+          type: string
+          format: uri
+      example:
+        _self: "http://mysite/current-page"
+        prev: "http://mysite/previous-page"
+        next: "http://mysite/next-page"
+
+    Price:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - value
+        - currency
+
+    Self:
+      type: object
+      properties:
+        _self:
+          type: string
+          format: uri
+        slug:
+          type: string
+      required:
+        - _self
+        - slug

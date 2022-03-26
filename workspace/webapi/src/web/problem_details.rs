@@ -1,10 +1,10 @@
-use std::collections::BTreeMap;
-
-use crate::urn::Urn;
+use crate::web::urn::Urn;
+use actix_web::{http, HttpResponse};
 use chrono::{DateTime, Utc};
+use common::validation::ValidationResult;
 use derive_builder::Builder;
 use serde::Serialize;
-use validator::ValidationErrors;
+use std::collections::BTreeMap;
 
 /// From RFC-7807
 /// "problem detail" is a way to carry machine-readable details of errors in a HTTP response to avoid
@@ -47,19 +47,10 @@ impl ProblemDetail {
     /// Creates a new Uniform Resource Name (URN) for an invalid request
     pub fn from_invalid_request(
         entity: &str,
-        validation_errors: ValidationErrors,
+        validation_result: ValidationResult,
     ) -> ProblemDetail {
         let now = chrono::Utc::now();
         let id = uuid::Uuid::new_v4();
-
-        let mut fields = BTreeMap::new();
-        for (field, errors) in validation_errors.field_errors() {
-            let value = errors
-                .iter()
-                .map(|e| e.to_string())
-                .collect::<Vec<String>>();
-            fields.insert(field.to_owned(), value);
-        }
 
         ProblemDetail {
             problem_type: Urn::invalid_request(entity),
@@ -68,9 +59,21 @@ impl ProblemDetail {
             detail: String::from(
                 "Fields validation failed for this request. Check them before you try again.",
             ),
-            fields,
+            fields: validation_result.to_map(),
             status_code: http::StatusCode::BAD_REQUEST.as_u16(),
             instance: Urn::from_uuid(entity, &id),
         }
+    }
+
+    pub fn to_response(&self) -> HttpResponse {
+        const CONTENT_TYPE: &str = "application/problem+json";
+
+        let mut builder = match self.status_code {
+            400 => HttpResponse::BadRequest(),
+            422 => HttpResponse::UnprocessableEntity(),
+            _ => HttpResponse::InternalServerError(),
+        };
+
+        builder.content_type(CONTENT_TYPE).json(self)
     }
 }

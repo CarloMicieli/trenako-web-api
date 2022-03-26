@@ -1,13 +1,10 @@
 [package]
 name = "webapi"
-version = "0.5.0"
-authors = ["CarloMicieli <carlo.micieli@gmail.com>"]
+version = "0.1.0"
 edition = "2021"
+authors = ["CarloMicieli <piovarolo@gmail.com>"]
 license = "MIT"
 rust-version = "1.59"
-
-[lib]
-path = "src/lib.rs"
 
 [lib]
 path = "src/lib.rs"
@@ -17,9 +14,9 @@ path = "src/main.rs"
 name = "trenako-web-api"
 
 [dependencies]
+common = { path = "../common" }
 catalog = { path = "../catalog" }
 collecting = { path = "../collecting" }
-hateoas = { path = "../hateoas" }
 
 actix-web = "4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
@@ -37,12 +34,11 @@ tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1.1"
 
-
 [dependencies.sqlx]
 version = "0.5"
 default-features = false
 features = [
-    "runtime-actix-rustls",
+    "runtime-tokio-rustls",
     "macros",
     "offline",
     "postgres",
@@ -50,3 +46,7 @@ features = [
     "chrono"
 ]
 
+[dev-dependencies]
+reqwest = "0.11"
+testcontainers = "0.12.0"
+pretty_assertions = "0.7.2"

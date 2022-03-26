@@ -1,0 +1,50 @@
+components:
+  schemas:
+    FavouriteShops:
+      type: object
+      properties:
+        user_id:
+          type: string
+        shops:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shop'
+      required:
+        - user_id
+
+    Shop:
+      type: object
+      properties:
+        _self:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+        contact:
+          $ref: "./common.yaml#/components/schemas/ContactInfo"
+        address:
+          $ref: "./common.yaml#/components/schemas/Address"
+
+    ShopRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        contact:
+          $ref: "./common.yaml#/components/schemas/ContactInfo"
+        address:
+          $ref: "./common.yaml#/components/schemas/Address"
+      required:
+        - name
+
+    Shops:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Shop"

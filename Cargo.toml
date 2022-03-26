@@ -1,8 +1,8 @@
 [workspace]
 
 members = [
+    "./workspace/common",
     "./workspace/collecting",
     "./workspace/catalog",
-    "./workspace/hateoas",
     "./workspace/webapi",
 ]

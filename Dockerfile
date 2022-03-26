@@ -29,7 +29,7 @@ HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f http://localhost/health || exit 1
 
 RUN apt-get update \
-    && apt-get install -y ca-certificates tzdata \
+    && apt-get install -y ca-certificates tzdata curl \
     && rm -rf /var/lib/apt/lists/*
 
 ENV TZ=Etc/UTC \

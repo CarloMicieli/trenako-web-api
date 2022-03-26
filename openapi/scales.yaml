@@ -1,0 +1,104 @@
+components:
+  schemas:
+    NewScale:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        ratio:
+          type: number
+          format: float
+        track_gauge:
+          $ref: "#/components/schemas/ScaleGauge"
+        standard:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - ratio
+
+    Scale:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+        description:
+          type: string
+        ratio:
+          type: number
+          format: float
+        track_gauge:
+          $ref: "#/components/schemas/ScaleGauge"
+        standard:
+          type: array
+          items:
+            type: string
+        created_at:
+          description: when got this scale was created
+          type: string
+          format: "date-time"
+        updated_at:
+          description: when got this scale was updated
+          type: string
+          format: "date-time"
+
+    ScaleGauge:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: float
+        inches:
+          type: number
+          format: float
+        gauge:
+          type: string
+          enum:
+            - NARROW
+            - STANDARD
+      example:
+        millimeters: 16.5
+        inches: 0.65
+        gauge: standard
+
+    Scales:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scale"
+
+    ScaleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        ratio:
+          type: number
+          format: float
+        track_gauge:
+          $ref: "#/components/schemas/ScaleGauge"
+        standard:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - ratio
