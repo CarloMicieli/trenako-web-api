@@ -1,0 +1,175 @@
+components:
+  schemas:
+    NewRailway:
+      description: a new railway company
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        registered_company_name:
+          type: string
+          maxLength: 250
+        country_code:
+          type: string
+          description: the ISO country code
+          minLength: 2
+          maxLength: 2
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        total_length:
+          $ref: "#/components/schemas/TotalLength"
+        period_of_activity:
+          $ref: "#/components/schemas/PeriodOfActivity"
+        track_gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        headquarter:
+          type: string
+          maxLength: 100
+        logo_url:
+          type: string
+          format: uri
+        website_url:
+          type: string
+          maxLength: 250
+          format: uri
+      required:
+        - name
+        - country
+
+    PeriodOfActivity:
+      description: the period of activity for a railway company
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+        operating_since:
+          type: string
+          format: date
+        operating_until:
+          type: string
+          format: date
+      required:
+        - status
+
+    Railway:
+      description: a railway company
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+        registered_company_name:
+          type: string
+        country_code:
+          type: string
+          description: the ISO country code
+        description:
+          type: string
+        total_length:
+          $ref: "#/components/schemas/TotalLength"
+        period_of_activity:
+          $ref: "#/components/schemas/PeriodOfActivity"
+        track_gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        headquarter:
+          type: string
+        logo_url:
+          type: string
+          format: uri
+        website_url:
+          type: string
+          format: uri
+        created_at:
+          description: when got this railway was created
+          type: string
+          format: "date-time"
+        updated_at:
+          description: when got this railway was updated
+          type: string
+          format: "date-time"
+
+    RailwayGauge:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: float
+        inches:
+          type: number
+          format: float
+        gauge:
+          type: string
+          enum:
+            - NARROW
+            - STANDARD
+      example:
+        millimeters: 16.5
+        inches: 0.65
+        gauge: standard
+
+    Railways:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Railway"
+
+    RailwayUpdate:
+      description: an update for the railway company
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        registered_company_name:
+          type: string
+          maxLength: 250
+        country_code:
+          type: string
+          description: the ISO country code
+          minLength: 2
+          maxLength: 2
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        total_length:
+          $ref: "#/components/schemas/TotalLength"
+        period_of_activity:
+          $ref: "#/components/schemas/PeriodOfActivity"
+        track_gauge:
+          $ref: "#/components/schemas/RailwayGauge"
+        headquarter:
+          type: string
+          maxLength: 100
+        logo_url:
+          type: string
+          format: uri
+        website_url:
+          type: string
+          maxLength: 250
+          format: uri
+      required:
+        - name
+        - country
+
+    TotalLength:
+      type: object
+      properties:
+        miles:
+          type: number
+          format: float
+        kilometers:
+          type: number
+          format: float

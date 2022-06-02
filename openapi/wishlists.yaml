@@ -1,0 +1,111 @@
+components:
+  schemas:
+    Budget:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - value
+        - currency
+
+    Wishlist:
+      description: a model railway wishlist. Users can create more than one wishlist.
+      type: object
+      properties:
+        user_id:
+          description: the user who owns this wishlist
+          type: string
+        visibility:
+          type: string
+          enum:
+            - PRIVATE
+            - PUBLIC
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              wishlist_item_id:
+                type: string
+                format: urn
+              catalog_item:
+                type: object
+                properties:
+                  _links:
+                    $ref: "./common.yaml#/components/schemas/Self"
+              added_date:
+                type: string
+                format: date
+              price:
+                $ref: "./common.yaml#/components/schemas/Price"
+              priority:
+                type: string
+                enum:
+                  - HIGH
+                  - LOW
+                  - NORMAL
+              notes:
+                type: string
+
+    WishlistRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - PRIVATE
+            - PUBLIC
+        budget:
+          $ref: "#/components/schemas/Budget"
+
+    WishlistItemRequest:
+      type: object
+      properties:
+        catalog_item_id:
+          type: string
+        added_date:
+          type: string
+          format: date
+        price:
+          $ref: "./common.yaml#/components/schemas/Price"
+        priority:
+          type: string
+          enum:
+            - HIGH
+            - LOW
+            - NORMAL
+        notes:
+          type: string
+
+    Wishlists:
+      type: object
+      properties:
+        user_id:
+          description: the user who owns this wishlist
+          type: string
+        visibility:
+          type: string
+          enum:
+            - ALL
+            - PRIVATE
+            - PUBLIC
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              _links:
+                $ref: "./common.yaml#/components/schemas/Self"
+              name:
+                type: string
+              visibility:
+                type: string
+                enum:
+                  - PRIVATE
+                  - PUBLIC

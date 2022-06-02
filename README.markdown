@@ -1,4 +1,4 @@
-# Trenako (web api)
+# Trenako Web Api
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 ![GitHub last commit](https://img.shields.io/github/last-commit/CarloMicieli/trenako-web-api)
@@ -12,7 +12,7 @@ A web api for model railway collections
 
 ## Tech Stack
 
-* 🦀 `Rust` 1.52
+* 🦀 `Rust` 1.59
 * `Cargo`
 * `Docker` / `Docker compose`
 
@@ -65,32 +65,38 @@ To begin install `rustup`
 
 ### Docker image
 
-To build the docker image
+To build the docker image:
 
 ```bash
-  docker build \
-    -f .docker/dev.dockerfile \
-    -t trenako-web-api:latest .
+  docker build -t trenako-web-api:latest .
 ```
 
+To run a `postgres` database:
+
 ```bash
-  docker run --rm --name webapi-dev \
-    -e APP_PORT=5000 \
-    -e DATABASE_URL=postgresql://postgres:mysecretpassword@<host_ip>:5432/trenako \
-    -e SECRET_KEY=my-secret-key \
-    -d -p 5000:5000 trenako-web-api:latest
+  docker run -it --rm -p:5432:5432 \
+    -e POSTGRES_PASSWORD=mysecretpassword \
+    -e POSTGRES_DB=trenakodb \
+    postgres
+```
+
+To run the server:
+
+```bash
+  export HOST_IP=<host_ip>
+  docker run --rm \
+    -e SERVER_HOST=0.0.0.0 \
+    -e SERVER_PORT=5000 \
+    -e DATABASE_NAME=trenakodb \
+    -e DATABASE_USERNAME=postgres \
+    -e DATABASE_PASSWORD=mysecretpassword \
+    -e DATABASE_HOST=$HOST_IP \
+    -e DATABASE_PORT=5432 \
+    -p 5000:5000 \
+    trenako-web-api:latest
 ```
 
 ### Database
-
-To run the `postgres` database:
-
-```bash
-  docker run --rm --name postgres-dev \
-    -e POSTGRES_PASSWORD=mysecretpassword \
-    -e POSTGRES_DB=trenako \
-    -d -p 5432:5432 -v postgres_data_dev:/var/lib/postgresql/data postgres
-```
 
 To run the migrations:
 
@@ -100,6 +106,15 @@ To run the migrations:
       amacneil/dbmate \
       --url "postgresql://postgres:mysecretpassword@<host_ip>:5432/trenako?sslmode=disable" \
       up
+```
+
+### OpenApi
+
+```bash
+  docker run --rm -p 8080:8080 \
+    -e API_URL=doc/trenako-open-api.yaml \
+    -v ${PWD}/openapi:/usr/share/nginx/html/doc \
+    swaggerapi/swagger-ui
 ```
 
 ## Deployment

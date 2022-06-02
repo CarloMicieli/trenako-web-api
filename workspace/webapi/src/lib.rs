@@ -1,5 +1,5 @@
 pub mod configuration;
-pub mod db;
+pub mod handlers;
 pub mod server;
 pub mod telemetry;
 pub mod web;

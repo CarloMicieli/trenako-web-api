@@ -1,0 +1,121 @@
+components:
+  schemas:
+    Brand:
+      description: a model railways manufacturer
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+        registered_company_name:
+          type: string
+        group_name:
+          type: string
+        description:
+          type: string
+        contact_info:
+          $ref: "./common.yaml#/components/schemas/ContactInfo"
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: "./common.yaml#/components/schemas/Address"
+        kind:
+          type: string
+          enum:
+            - INDUSTRIAL
+            - BRASS_MODELS
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - OUT_OF_BUSINESS
+
+    Brands:
+      description: a list of model railway produce brands
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Pagination"
+        limit:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Brand"
+
+    NewBrand:
+      description: a model railways manufacturer
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        registered_company_name:
+          type: string
+          maxLength: 50
+        group_name:
+          type: string
+          maxLength: 50
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        contact_info:
+          $ref: "./common.yaml#/components/schemas/ContactInfo"
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: "./common.yaml#/components/schemas/Address"
+        kind:
+          type: string
+          enum:
+            - INDUSTRIAL
+            - BRASS_MODELS
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - OUT_OF_BUSINESS
+      required:
+        - name
+        - kind
+
+    BrandUpdate:
+      description: a model railways manufacturer
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 25
+        registered_company_name:
+          type: string
+          maxLength: 50
+        group_name:
+          type: string
+          maxLength: 50
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        contact_info:
+          $ref: "./common.yaml#/components/schemas/ContactInfo"
+        logo_url:
+          type: string
+          format: uri
+        address:
+          $ref: "./common.yaml#/components/schemas/Address"
+        kind:
+          type: string
+          enum:
+            - INDUSTRIAL
+            - BRASS_MODELS
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - OUT_OF_BUSINESS
+      required:
+        - name
+        - kind

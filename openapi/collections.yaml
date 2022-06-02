@@ -1,0 +1,110 @@
+components:
+  schemas:
+    Collection:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        owner:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionItem"
+
+    CollectionItem:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        catalog_item:
+          type: object
+          properties:
+            _links:
+              $ref: "./common.yaml#/components/schemas/Self"
+            brand:
+              type: string
+            item_number:
+              type: string
+            category:
+              type: string
+            description:
+              type: string
+        condition:
+          type: string
+          enum:
+            - NEW
+            - PRE_OWNED
+        price:
+          $ref: "./common.yaml#/components/schemas/Price"
+        purchased_at:
+          type: object
+          properties:
+            _links:
+              $ref: "./common.yaml#/components/schemas/Self"
+            shop:
+              type: string
+        added_date:
+          type: string
+          format: date
+        notes:
+          type: string
+
+    CollectionStatistics:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        owner:
+          type: string
+        modified_date:
+          type: string
+          format: date-time
+        total_value:
+          $ref: "./common.yaml#/components/schemas/Price"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              count:
+                type: integer
+                format: int32
+              year:
+                type: integer
+                format: int32
+              total_value:
+                $ref: "./common.yaml#/components/schemas/Price"
+
+    CollectionItemRequest:
+      type: object
+      properties:
+        catalog_item_id:
+          type: string
+        shop_id:
+          type: string
+          format: uuid
+        price:
+          $ref: "./common.yaml#/components/schemas/Price"
+        condition:
+          type: string
+          enum:
+            - NEW
+            - PRE_OWNED
+        added_date:
+          type: string
+          format: date
+        notes:
+          type: string
+      required:
+        - catalog_item_id
+        - price
+
+    CollectionRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+          maxLength: 150

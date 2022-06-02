@@ -1,5 +1,12 @@
 # Trenako Web Api Changelog
 
+# [0.5.0](https://github.com/CarloMicieli/trenako-web-api/compare/v0.4.0...v0.5.0) (2021-06-06)
+
+
+### Features
+
+* add problem detail for web errors ([aef88fb](https://github.com/CarloMicieli/trenako-web-api/commit/aef88fb85c77fac43dd1d4fff45c130198c077a9))
+
 # [0.4.0](https://github.com/CarloMicieli/trenako-web-api/compare/v0.3.0...v0.4.0) (2021-06-06)
 
 

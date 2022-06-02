@@ -1,0 +1,644 @@
+components:
+  schemas:
+    CatalogItem:
+      type: object
+      properties:
+        brand:
+          $ref: "#/components/schemas/CatalogItemBrand"
+        itemNumber:
+          type: string
+        scale:
+          $ref: "#/components/schemas/CatalogItemScale"
+        description:
+          type: string
+        prototype_description:
+          type: string
+        model_description:
+          type: string
+        delivery_date:
+          type: string
+        available:
+          type: boolean
+        power_method:
+          type: string
+          enum:
+            - AC
+            - DC
+            - NONE
+            - TRIX_EXPRESS
+        category:
+          type: string
+          enum:
+            - FREIGHT_CARS
+            - LOCOMOTIVES
+            - PASSENGER_CARS
+            - SETS
+            - TRAINS
+        rolling_stocks:
+          type: array
+          items:
+            anyOf:
+              - $ref: "#/components/schemas/Locomotive"
+              - $ref: "#/components/schemas/PassengerCar"
+              - $ref: "#/components/schemas/FreightCar"
+        rolling_stocks_count:
+          type: integer
+          format: int32
+        created_at:
+          description: when got this catalog item created
+          type: string
+          format: "date-time"
+        updated_at:
+          description: when got this catalog item last updated
+          type: string
+          format: "date-time"
+
+    CatalogItemBrand:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+
+    CatalogItemScale:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string
+
+    CatalogItemUpdate:
+      type: object
+      properties:
+        brand:
+          type: string
+          description: the brand name
+          minLength: 3
+          maxLength: 25
+        item_number:
+          type: string
+          description: the catalog item number
+          minLength: 3
+          maxLength: 10
+        scale:
+          type: string
+          description: the scale name
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        prototype_description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        model_description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        delivery_date:
+          type: string
+          description: when this catalog item has been (or will be) delivered
+          minLength: 4
+          maxLength: 7
+          example: "2000/Q1"
+        available:
+          type: boolean
+        power_method:
+          type: string
+          enum:
+            - AC
+            - DC
+            - NONE
+            - TRIX_EXPRESS
+        category:
+          type: string
+          enum:
+            - FREIGHT_CARS
+            - LOCOMOTIVES
+            - PASSENGER_CARS
+            - SETS
+            - TRAINS
+        rolling_stocks_count:
+          type: integer
+          description: the number of rolling stocks for this catalog item
+          minimum: 1
+          maximum: 50
+        rolling_stocks:
+          description: |
+            the list of rolling stocks for this catalog item, this is optional 
+            but if provided its size must match the value provided with rolling_stocks_count
+          type: array
+          items:
+            anyOf:
+              - $ref: "#/components/schemas/LocomotiveRequest"
+              - $ref: "#/components/schemas/PassengerCarRequest"
+              - $ref: "#/components/schemas/FreightCarRequest"
+      required:
+        - brand
+        - item_number
+        - scale
+        - category
+        - rolling_stocks_count
+
+    LengthOverBuffer:
+      type: object
+      properties:
+        millimeters:
+          type: number
+          format: float
+          minimum: 0
+        inches:
+          type: number
+          format: float
+          minimum: 0
+
+    NewCatalogItem:
+      type: object
+      properties:
+        brand:
+          type: string
+          description: the brand name
+          minLength: 3
+          maxLength: 25
+          example: "ACME"
+        item_number:
+          type: string
+          description: the catalog item number
+          minLength: 3
+          maxLength: 10
+          example: "123456"
+        scale:
+          type: string
+          description: the scale name
+          example: "H0"
+        description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        prototype_description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        model_description:
+          $ref: "./common.yaml#/components/schemas/LocalizedText"
+        delivery_date:
+          type: string
+          description: when this catalog item has been (or will be) delivered
+          minLength: 4
+          maxLength: 7
+          example: "2000/Q1"
+        available:
+          type: boolean
+        power_method:
+          type: string
+          enum:
+            - AC
+            - DC
+            - NONE
+            - TRIX_EXPRESS
+        category:
+          type: string
+          enum:
+            - FREIGHT_CARS
+            - LOCOMOTIVES
+            - PASSENGER_CARS
+            - SETS
+            - TRAINS
+        rolling_stocks_count:
+          type: integer
+          description: the number of rolling stocks for this catalog item
+          minimum: 1
+          maximum: 50
+        rolling_stocks:
+          description: |
+            the list of rolling stocks for this catalog item, this is optional 
+            but if provided its size must match the value provided with rolling_stocks_count
+          type: array
+          items:
+            anyOf:
+              - $ref: "#/components/schemas/LocomotiveRequest"
+              - $ref: "#/components/schemas/PassengerCarRequest"
+              - $ref: "#/components/schemas/FreightCarRequest"
+      required:
+        - brand
+        - item_number
+        - scale
+        - category
+        - rolling_stocks_count
+
+    RollingStockRequest:
+      type: object
+      discriminator:
+        propertyName: category
+      required:
+        - epoch
+        - railway
+        - category
+      properties:
+        epoch:
+          type: string
+          description: the rolling stock epoch
+          maxLength: 10
+          example: "IV"
+        length_over_buffer:
+          $ref: "#/components/schemas/LengthOverBuffer"
+        min_radius:
+          type: number
+          format: float
+          minimum: 0
+        railway:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "DB"
+        category:
+          type: string
+          enum:
+            - FREIGHT_CARS
+            - LOCOMOTIVES
+            - PASSENGER_CARS
+            - SETS
+            - TRAINS
+        livery:
+          type: string
+          maxLength: 50
+        couplers:
+          type: string
+          enum:
+            - NEM_352
+            - NEM_355
+            - NEM_356
+            - NEM_357
+            - NEM_358
+            - NEM_360
+            - NEM_362
+            - NEM_363
+            - NEM_364
+            - NEM_370
+
+    LocomotiveRequest:
+      allOf:
+        - $ref: "#/components/schemas/RollingStockRequest"
+        - type: object
+          description: a locomotive rolling stock
+          properties:
+            class_name:
+              type: string
+              maxLength: 15
+            road_number:
+              type: string
+              maxLength: 15
+            locomotive_type:
+              type: string
+              enum:
+                - STEAM_LOCOMOTIVE
+                - DIESEL_LOCOMOTIVE
+                - ELECTRIC_LOCOMOTIVE
+            series:
+              type: string
+              maxLength: 50
+            depot:
+              type: string
+              maxLength: 100
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+            dcc_interface:
+              type: string
+              enum:
+                - MTC_21
+                - NEM_651
+                - NEM_652
+                - NEXT_18
+                - NONE
+                - PLUX_16
+                - PLUX_22
+                - PLUX_8
+            control:
+              type: string
+              enum:
+                - NONE
+                - DCC_READY
+                - DCC_FITTED
+                - DCC_SOUND
+
+    PassengerCarRequest:
+      allOf:
+        - $ref: "#/components/schemas/RollingStockRequest"
+        - type: object
+          description: a passenger car rolling stock
+          properties:
+            type_name:
+              type: string
+              maxLength: 25
+            road_number:
+              type: string
+              maxLength: 15
+            service_level:
+              type: string
+              description: the service level, allowed values are '1cl', '2cl' and '3cl'.
+              maxLength: 15
+              example: "1cl/2cl"
+            passenger_car_type:
+              type: string
+              enum:
+                - BAGGAGE_CAR
+                - COMBINE_CAR
+                - COMPARTMENT_COACH
+                - DINING_CAR
+                - DOUBLE_DECKER
+                - DRIVING_TRAILER
+                - LOUNGE
+                - OBSERVATION
+                - OPEN_COACH
+                - RAILWAY_POST_OFFICE
+                - SLEEPING_CAR
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+            dcc_interface:
+              type: string
+              enum:
+                - MTC_21
+                - NEM_651
+                - NEM_652
+                - NEXT_18
+                - NONE
+                - PLUX_16
+                - PLUX_22
+                - PLUX_8
+
+    FreightCarRequest:
+      allOf:
+        - $ref: "#/components/schemas/RollingStockRequest"
+        - type: object
+          description: a freight car rolling stock
+          properties:
+            type_name:
+              type: string
+              maxLength: 25
+            road_number:
+              type: string
+              maxLength: 15
+            freight_car_type:
+              type: string
+              enum:
+                - AUTO_TRANSPORT_CARS
+                - BRAKE_WAGON
+                - CONTAINER_CARS
+                - COVERED_FREIGHT_CARS
+                - DEEP_WELL_FLAT_CARS
+                - DUMP_CARS
+                - GONDOLA
+                - HEAVY_GOODS_WAGONS
+                - HINGED_COVER_WAGONS
+                - HOPPER_WAGON
+                - REFRIGERATOR_CARS
+                - SILO_CONTAINER_CARS
+                - SLIDE_TARPAULIN_WAGON
+                - SLIDING_WALL_BOXCARS
+                - SPECIAL_TRANSPORT
+                - STAKE_WAGONS
+                - SWING_ROOF_WAGON
+                - TANK_CARS
+                - TELESCOPE_HOOD_WAGONS
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+
+    RollingStock:
+      type: object
+      description: a rolling stock include in a catalog item
+      discriminator:
+        propertyName: category
+      properties:
+        rolling_stock_id:
+          type: string
+          format: urn
+        epoch:
+          type: string
+          description: the rolling stock epoch
+          maxLength: 10
+          example: "IV"
+        length_over_buffer:
+          $ref: "#/components/schemas/LengthOverBuffer"
+        min_radius:
+          type: number
+          format: float
+          minimum: 0
+        railway:
+          $ref: "#/components/schemas/RollingStockRailway"
+        category:
+          type: string
+          enum:
+            - FREIGHT_CARS
+            - LOCOMOTIVES
+            - PASSENGER_CARS
+            - SETS
+            - TRAINS
+        livery:
+          type: string
+          maxLength: 50
+        couplers:
+          type: string
+          enum:
+            - NEM_352
+            - NEM_355
+            - NEM_356
+            - NEM_357
+            - NEM_358
+            - NEM_360
+            - NEM_362
+            - NEM_363
+            - NEM_364
+            - NEM_370
+
+    Locomotive:
+      allOf:
+        - $ref: "#/components/schemas/RollingStock"
+        - type: object
+          description: a locomotive rolling stock
+          properties:
+            class_name:
+              type: string
+              maxLength: 15
+            road_number:
+              type: string
+              maxLength: 15
+            locomotive_type:
+              type: string
+              enum:
+                - STEAM_LOCOMOTIVE
+                - DIESEL_LOCOMOTIVE
+                - ELECTRIC_LOCOMOTIVE
+            series:
+              type: string
+              maxLength: 50
+            depot:
+              type: string
+              maxLength: 100
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+            dcc_interface:
+              type: string
+              enum:
+                - MTC_21
+                - NEM_651
+                - NEM_652
+                - NEXT_18
+                - NONE
+                - PLUX_16
+                - PLUX_22
+                - PLUX_8
+            control:
+              type: string
+              enum:
+                - NONE
+                - DCC_READY
+                - DCC_FITTED
+                - DCC_SOUND
+
+    PassengerCar:
+      allOf:
+        - $ref: "#/components/schemas/RollingStock"
+        - type: object
+          description: a passenger car rolling stock
+          properties:
+            type_name:
+              type: string
+              maxLength: 25
+            road_number:
+              type: string
+              maxLength: 15
+            service_level:
+              type: string
+              description: the service level, allowed values are '1cl', '2cl' and '3cl'.
+              maxLength: 15
+              example: "1cl/2cl"
+            passenger_car_type:
+              type: string
+              enum:
+                - BAGGAGE_CAR
+                - COMBINE_CAR
+                - COMPARTMENT_COACH
+                - DINING_CAR
+                - DOUBLE_DECKER
+                - DRIVING_TRAILER
+                - LOUNGE
+                - OBSERVATION
+                - OPEN_COACH
+                - RAILWAY_POST_OFFICE
+                - SLEEPING_CAR
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+            dcc_interface:
+              type: string
+              enum:
+                - MTC_21
+                - NEM_651
+                - NEM_652
+                - NEXT_18
+                - NONE
+                - PLUX_16
+                - PLUX_22
+                - PLUX_8
+
+    FreightCar:
+      allOf:
+        - $ref: "#/components/schemas/RollingStock"
+        - type: object
+          description: a freight car rolling stock
+          properties:
+            type_name:
+              type: string
+              maxLength: 25
+            road_number:
+              type: string
+              maxLength: 15
+            freight_car_type:
+              type: string
+              enum:
+                - AUTO_TRANSPORT_CARS
+                - BRAKE_WAGON
+                - CONTAINER_CARS
+                - COVERED_FREIGHT_CARS
+                - DEEP_WELL_FLAT_CARS
+                - DUMP_CARS
+                - GONDOLA
+                - HEAVY_GOODS_WAGONS
+                - HINGED_COVER_WAGONS
+                - HOPPER_WAGON
+                - REFRIGERATOR_CARS
+                - SILO_CONTAINER_CARS
+                - SLIDE_TARPAULIN_WAGON
+                - SLIDING_WALL_BOXCARS
+                - SPECIAL_TRANSPORT
+                - STAKE_WAGONS
+                - SWING_ROOF_WAGON
+                - TANK_CARS
+                - TELESCOPE_HOOD_WAGONS
+            couplers:
+              type: string
+              enum:
+                - NEM_352
+                - NEM_355
+                - NEM_356
+                - NEM_357
+                - NEM_358
+                - NEM_360
+                - NEM_362
+                - NEM_363
+                - NEM_364
+                - NEM_370
+
+    RollingStockRailway:
+      type: object
+      properties:
+        _links:
+          $ref: "./common.yaml#/components/schemas/Self"
+        name:
+          type: string

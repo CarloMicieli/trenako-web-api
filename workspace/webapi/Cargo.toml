@@ -1,9 +1,10 @@
 [package]
 name = "webapi"
-version = "0.4.0"
-authors = ["CarloMicieli <carlo.micieli@gmail.com>"]
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
+authors = ["CarloMicieli <piovarolo@gmail.com>"]
 license = "MIT"
+rust-version = "1.59"
 
 [lib]
 path = "src/lib.rs"
@@ -13,40 +14,31 @@ path = "src/main.rs"
 name = "trenako-web-api"
 
 [dependencies]
+common = { path = "../common" }
 catalog = { path = "../catalog" }
 collecting = { path = "../collecting" }
-social = { path = "../social" }
 
-actix-http = "=3.0.0-beta.10"
-actix-service = "=2.0.0"
-actix-web = "=4.0.0-beta.9"
-actix-web-validator = "2"
+actix-web = "4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
-config = "0.11"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-serde_derive = "1.0"
-chrono = { version = "0.4.15", features = ["serde"] }
-anyhow = "1"
-thiserror = "1"
+serde = { version = "1.0.115", features = ["derive"] }
+uuid = { version = "0.8.1", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }
 rust_decimal = { version = "1.8", features = ["serde-float"] }
-uuid = { version = "0.8.2", features = ["serde", "v4"] }
 validator = { version = "0.14", features = ["derive"] }
 derive_builder = "0.10"
-
-refinery = { version = "0.6", features = ["tokio-postgres"]}
+config = { version = "0.12", default-features = false, features = ["yaml"] }
 tracing = "0.1.19"
-tracing-futures = "0.2.4"
-tracing-subscriber = { version = "0.2.12", features = ["registry", "env-filter"] }
-tracing-bunyan-formatter = "0.2"
+tracing-actix-web = "0.5"
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1.1"
-tracing-actix-web = "0.4.0-beta.12"
 
 [dependencies.sqlx]
 version = "0.5"
 default-features = false
 features = [
-    "runtime-actix-rustls",
+    "runtime-tokio-rustls",
     "macros",
     "offline",
     "postgres",
@@ -56,7 +48,5 @@ features = [
 
 [dev-dependencies]
 reqwest = "0.11"
-tokio = { version = "1", features = ["macros"] }
-actix-rt = "2"
 testcontainers = "0.12.0"
 pretty_assertions = "0.7.2"

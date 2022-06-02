@@ -1,9 +1,7 @@
-pub mod manufactures;
+pub mod brands;
+pub mod catalog_items;
+pub mod railways;
+pub mod scales;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+#[macro_use]
+extern crate derive_builder;
